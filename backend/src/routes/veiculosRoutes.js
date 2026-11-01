@@ -1,7 +1,7 @@
 import express from "express";
-import VeiculosController from "../controllers/veiculoController";
+import VeiculosController from "../controllers/veiculoController.js";
 import admMiddleware from "../middlewares/admMiddleware";
-import authMiddleware from "../middlewares/authMiddleware";
+import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 //rotas de veiculos

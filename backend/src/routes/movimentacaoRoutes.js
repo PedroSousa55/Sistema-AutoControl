@@ -1,7 +1,7 @@
 import express from "express";
-import MovimentacaoController from "../controllers/movimentacaoController";
-import admMiddleware from "../middlewares/admMiddleware";
-import authMiddleware from "../middlewares/authMiddleware";
+import MovimentacaoController from "../controllers/movimentacaoController.js";
+import admMiddleware from "../middlewares/admMiddleware.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 //rota de movimentacao
