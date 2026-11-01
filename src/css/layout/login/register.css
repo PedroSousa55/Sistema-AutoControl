@@ -1,0 +1,201 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --orange: #e85d16;
+    --background: #050607;
+    --field: #10151c;
+    --field-border: #252c35;
+    --text: #f5f5f5;
+    --muted: #778392;
+}
+
+html,
+body {
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+    background: #080a0d;
+    border: 1px solid #202020;
+    border-radius: 6px;
+    margin: auto;
+    
+}
+
+.form-cadastro {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.form-cadastro h1 {
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.form-cadastro h1 span {
+    color: var(--orange);
+}
+
+.subtitulo {
+    margin-top: -11px;
+    margin-bottom: 5px;
+    color: #d0d0d0;
+    font-size: 12px;
+}
+
+.campo input{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+
+
+.campo input {
+    width: 100%;
+    min-width: 0;
+    padding: 0 13px;
+    background: var(--field);
+    border-radius: 5px;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+}
+
+
+
+.campo-senha {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.campo-senha input {
+    flex: 1;
+    
+}
+
+.mostrar-senha {
+    min-height: 46px;
+    padding: 0 11px;
+    background: var(--field);
+    border: 1px solid var(--field-border);
+    border-radius: 5px;
+    color: var(--orange);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+
+
+}
+
+.mostrar-senha:hover {
+    border-color: var(--orange);
+}
+
+.botao-cadastrar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    margin-top: 3px;
+    padding: 0 20px;
+    background: var(--orange);
+    border: 1px solid #bd4b12;
+    border-radius: 7px;
+    color: #080808;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.botao-cadastrar:hover {
+    background: #f16a22;
+}
+
+.botao-cadastrar:active {
+    transform: scale(0.99);
+}
+
+#mensagem {
+    min-height: 14px;
+    margin-top: -8px;
+    margin-bottom: -8px;
+    text-align: center;
+    font-size: 11px;
+    color: #f4a078;
+}
+
+.texto-login {
+    margin-top: 2px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.texto-login a {
+    color: var(--orange);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.texto-login a:hover {
+    color: #f16a22;
+    text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+    body {
+        padding: 14px;
+    }
+
+    .container {
+        padding: 30px 22px;
+    }
+
+    .form-cadastro h1 {
+        font-size: 24px;
+    }
+
+    .campo-senha {
+        gap: 6px;
+    }
+
+    .mostrar-senha {
+        padding: 0 9px;
+    }
+}
+
+@media (max-height: 650px) {
+    body {
+        align-items: start;
+    }
+
+    .container {
+        margin: 10px 0;
+    }
+}

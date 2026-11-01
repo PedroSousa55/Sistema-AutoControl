@@ -1,0 +1,583 @@
+
+/* ===== CONFIGURAÇÃO ===== */
+
+#config_main {
+  --cfg-bg-card: #0b0f16;
+  --cfg-bg-input: #0d121a;
+  --cfg-borda: #1c2430;
+  --cfg-texto: #ffffff;
+  --cfg-texto-suave: #c9d1da;
+  --cfg-laranja: #e8590c;
+  --cfg-laranja-hover: #ff6a1a;
+}
+
+.config-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 24px;
+}
+
+/* esconde os radios que controlam as abas */
+.config-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ----- Abas ----- */
+.config-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 14px 24px;
+  background: var(--cfg-bg-card);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 8px;
+  margin-bottom: 48px;
+}
+
+.config-tabs label {
+  position: relative;
+  padding-bottom: 3px;
+  font-size: 15px;
+  color: var(--cfg-texto);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.config-tabs label:hover {
+  color: var(--cfg-laranja-hover);
+}
+
+#tab_geral:checked ~ .config-tabs label[for="tab_geral"],
+#tab_usuarios:checked ~ .config-tabs label[for="tab_usuarios"],
+#tab_notificacoes:checked ~ .config-tabs label[for="tab_notificacoes"] {
+  color: var(--cfg-laranja);
+}
+
+#tab_geral:checked ~ .config-tabs label[for="tab_geral"]::after,
+#tab_usuarios:checked ~ .config-tabs label[for="tab_usuarios"]::after,
+#tab_notificacoes:checked ~ .config-tabs label[for="tab_notificacoes"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--cfg-laranja);
+  border-radius: 2px;
+}
+
+/* ----- Painéis ----- */
+.config-panel {
+  display: none;
+}
+
+#tab_geral:checked ~ #painel_geral,
+#tab_usuarios:checked ~ #painel_usuarios,
+#tab_notificacoes:checked ~ #painel_notificacoes {
+  display: block;
+}
+
+/* ----- Card ----- */
+.config-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--cfg-bg-card);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 8px;
+  padding: 28px 16px;
+}
+
+.config-card-vazio {
+  display: block;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--cfg-texto-suave);
+}
+
+.config-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 16px;
+}
+
+.config-coluna-direita {
+  border-left: 1px solid var(--cfg-borda);
+  gap: 22px;
+}
+
+/* ----- Campos ----- */
+.config-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.config-campo > label {
+  font-size: 16px;
+  color: var(--cfg-texto);
+}
+
+.config-campo input,
+.config-horarios select {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  background: var(--cfg-bg-input);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 6px;
+  color: var(--cfg-texto);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.config-campo input:focus,
+.config-horarios select:focus {
+  border-color: var(--cfg-laranja);
+  box-shadow: 0 0 0 2px rgba(232, 89, 12, 0.2);
+}
+
+/* remove setinhas do input number */
+.config-campo input[type="number"]::-webkit-outer-spin-button,
+.config-campo input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+
+/* ----- Horários ----- */
+.config-horarios {
+  display: flex;
+  gap: 16px;
+}
+
+.config-horarios select {
+  cursor: pointer;
+}
+
+/* ----- Switch ----- */
+.config-switch-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px 0 8px;
+  font-size: 13px;
+  color: var(--cfg-texto);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.switch-slider {
+  position: absolute;
+  inset: 0;
+  background: #2a3340;
+  border-radius: 999px;
+  transition: background 0.25s;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.25s;
+}
+
+.switch input:checked + .switch-slider {
+  background: var(--cfg-laranja);
+}
+
+.switch input:checked + .switch-slider::before {
+  transform: translateX(26px);
+}
+
+.switch input:focus-visible + .switch-slider {
+  box-shadow: 0 0 0 2px rgba(232, 89, 12, 0.4);
+}
+
+/* ----- Botão salvar ----- */
+.config-botao-salvar {
+  margin-top: 8px;
+  height: 42px;
+  width: 100%;
+  background: var(--cfg-laranja);
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 18px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.config-botao-salvar:hover {
+  background: var(--cfg-laranja-hover);
+}
+
+.config-botao-salvar:active {
+  transform: scale(0.99);
+}
+/* ===== CONFIGURAÇÃO > USUÁRIOS ===== */
+/* Usa as variáveis --cfg-* já definidas em #config_main (config.css) */
+
+.usuario-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+/* ----- Card esquerdo ----- */
+.usuario-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+  background: var(--cfg-bg-card);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 8px;
+}
+
+.usuario-avatar-area {
+  position: relative;
+  width: 56px;
+  height: 56px;
+}
+
+.usuario-avatar {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #151b25;
+  border: 2px solid var(--cfg-borda);
+  border-radius: 50%;
+}
+
+.usuario-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.usuario-avatar svg {
+  width: 60%;
+  height: 60%;
+  fill: none;
+  stroke: var(--cfg-texto-suave);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.usuario-avatar-badge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--cfg-laranja);
+  border-radius: 50%;
+}
+
+.usuario-avatar-badge svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.usuario-saudacao {
+  margin: 14px 0 28px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cfg-texto);
+  text-align: center;
+}
+
+/* ----- Menu do perfil ----- */
+.usuario-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.usuario-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 8px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--cfg-texto);
+  font-size: 13px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.usuario-item .icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.usuario-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+#sub_usuario:checked ~ .usuario-layout .usuario-item[for="sub_usuario"],
+#sub_login:checked ~ .usuario-layout .usuario-item[for="sub_login"] {
+  color: var(--cfg-laranja);
+}
+
+/* ----- Conteúdo (direita) ----- */
+.usuario-conteudo {
+  display: none;
+}
+
+#sub_usuario:checked ~ .usuario-layout #conteudo_usuario,
+#sub_login:checked ~ .usuario-layout #conteudo_login {
+  display: flex;
+}
+
+.usuario-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 300px;
+  padding: 18px 26px 26px;
+  background: var(--cfg-bg-card);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 8px;
+}
+
+.usuario-card-vazio p {
+  margin-top: 24px;
+  color: var(--cfg-texto-suave);
+}
+
+.usuario-titulo {
+  margin: 0 0 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cfg-texto);
+}
+
+/* ----- Campos ----- */
+.usuario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 16px;
+  max-width: 340px;
+  max-width: 100%;
+}
+
+.usuario-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.usuario-campo-full {
+  grid-column: 1 / -1;
+}
+
+.usuario-campo label {
+  font-size: 9px;
+  color: #6b7686;
+}
+
+.usuario-campo input,
+.usuario-campo select {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--cfg-bg-input);
+  border: 1px solid var(--cfg-borda);
+  border-radius: 5px;
+  color: var(--cfg-texto);
+  font-size: 11px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.usuario-campo select {
+  cursor: pointer;
+}
+
+.usuario-campo select:disabled {
+  opacity: 1;
+  cursor: default;
+  color: var(--cfg-texto);
+}
+
+/* modo edição (classe adicionada pelo JS) */
+.usuario-card.editando input,
+.usuario-card.editando select {
+  border-color: #3a4556;
+}
+
+.usuario-card.editando input:focus,
+.usuario-card.editando select:focus {
+  border-color: var(--cfg-laranja);
+  box-shadow: 0 0 0 2px rgba(232, 89, 12, 0.2);
+}
+
+/* e-mail com ícone de verificado */
+.usuario-input-icone {
+  position: relative;
+}
+
+.usuario-input-icone input {
+  padding-right: 34px;
+}
+
+.usuario-verificado {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  fill: #22c55e;
+  stroke: none;
+  pointer-events: none;
+}
+
+.usuario-verificado path {
+  fill: none;
+  stroke: #0b0f16;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ----- Botões ----- */
+.usuario-acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.usuario-botao-editar,
+.usuario-botao-salvar {
+  height: 34px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, opacity 0.2s, transform 0.1s;
+}
+
+.usuario-botao-editar {
+  background: transparent;
+  border: 1.5px solid var(--cfg-laranja);
+  color: var(--cfg-texto);
+}
+
+.usuario-botao-editar:hover {
+  background: rgba(232, 89, 12, 0.12);
+}
+
+.usuario-botao-salvar {
+  background: var(--cfg-laranja);
+  border: 1.5px solid var(--cfg-laranja);
+  color: #ffffff;
+}
+
+.usuario-botao-salvar:hover:not(:disabled) {
+  background: var(--cfg-laranja-hover);
+}
+
+.usuario-botao-salvar:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.usuario-botao-editar:active,
+.usuario-botao-salvar:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+@media (max-width: 800px) {
+  .usuario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario-card {
+    padding: 18px 16px 20px;
+  }
+
+  .usuario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario-acoes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .config-tabs {
+    gap: 24px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+  }
+
+  .config-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 20px 8px;
+  }
+
+  .config-coluna-direita {
+    border-left: none;
+    border-top: 1px solid var(--cfg-borda);
+    padding-top: 24px;
+  }
+}

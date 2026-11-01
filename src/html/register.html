@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - AutoControl</title>
+    <link rel="stylesheet" href="../css/stye.css">
+</head>
+<body>
+
+    <main class="container">
+        <form id="form_cadastro" class="form-cadastro">
+
+            <h1>Registro <span>AutoControl</span></h1>
+            <p class="subtitulo">Preencha os dados para se cadastrar</p>
+
+            <div class="campo">
+                <label for="nome"></label>
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Digite seu nome"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="email"></label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Digite seu e-mail"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="senha"></label>
+                <input
+                    type="password"
+                    id="senha"
+                    placeholder="Digite sua senha"
+                    required
+                ><button type="button" class="mostrar-senha" data-senha="senha">
+                        Mostrar
+                    </button>
+            </div>
+                    
+            <div class="campo">
+                <label for="confirmar_senha"></label>
+                    <input
+                        type="password"
+                        class="campo-senha"
+                        id="confirmar_senha"
+                        placeholder="Confirme sua senha"
+                        required
+                        minlength="6"
+                    >
+                    <button type="button" class="mostrar-senha" data-senha="confirmar_senha">
+                        Mostrar
+                    </button>
+            </div>
+           
+
+            <p id="mensagem"></p>
+
+            <button type="submit" class="botao-cadastrar">
+                Criar conta
+            </button>
+
+            <p class="texto-login">
+                Já tem uma conta?
+                <a href="/src/html/login.html">Entrar</a>
+            </p>
+
+        </form>
+    </main>
+
+    <script src="/src/script/modules/register.js" defer></script>
+</body>
+</html>

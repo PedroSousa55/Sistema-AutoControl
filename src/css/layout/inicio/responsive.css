@@ -1,0 +1,584 @@
+
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+main {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.cards_main,
+.cards,
+.card,
+.historico-grid,
+.historico-card,
+section {
+    min-width: 0;
+}
+
+img,
+canvas {
+    max-width: 100%;
+}
+
+
+
+@media (max-width: 1100px) {
+
+
+    .cards_main {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card h1 {
+        font-size: 23px;
+    }
+
+    .card-info p {
+        white-space: normal;
+    }
+
+
+
+    section {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .veiculo {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .status {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .video {
+        grid-column: 2;
+        grid-row: auto;
+    }
+
+    .cards {
+        padding: 18px;
+    }
+
+
+
+    #grafico_Linha {
+        height: 210px;
+    }
+
+    .grafico-status-container {
+        max-width: 180px;
+    }
+
+
+
+    .historico-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .historico-card {
+        padding: 14px;
+    }
+
+    .historico-linha {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
+        gap: 6px;
+        font-size: 10px;
+    }
+
+    .historico-titulo h1 {
+        font-size: 14px;
+    }
+}
+
+
+
+@media (max-width: 800px) {
+
+
+    .sidebar {
+        width: 165px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .logo {
+        gap: 6px;
+    }
+
+    .logo-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    .logo-text h1 {
+        font-size: 13px;
+    }
+
+    .logo-text p {
+        font-size: 5.5px;
+    }
+
+    .menu a {
+        gap: 12px;
+        padding-left: 8px;
+        font-size: 11px;
+    }
+
+
+
+    main {
+        margin-left: 175px;
+        width: calc(100% - 175px);
+        padding: 20px 15px;
+    }
+
+    .h1_admin {
+        margin-left: 0;
+        font-size: 24px;
+    }
+
+    .cards_main {
+        gap: 12px;
+    }
+
+    .card-header {
+        gap: 8px;
+    }
+
+    .icon-box {
+        width: 34px;
+        height: 34px;
+    }
+
+    .card h1,
+    .card-info,
+    .vagas-texto,
+    .barra-vagas {
+        margin-left: 42px;
+    }
+
+    .card h1 {
+        font-size: 21px;
+    }
+
+
+
+    .cards {
+        padding: 15px;
+    }
+
+    .cards h1 {
+        font-size: 16px;
+    }
+
+    .legenda-movimento {
+        flex-wrap: wrap;
+        gap: 10px 16px;
+    }
+
+    .imagem-veiculo {
+        height: 140px;
+    }
+
+
+
+    .historico-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .historico-titulo {
+        flex-wrap: wrap;
+    }
+
+    .historico-titulo h1 {
+        white-space: normal;
+    }
+}
+
+
+
+@media (max-width: 600px) {
+
+
+    .menu-toggle {
+        display: flex;
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        z-index: 1002;
+    }
+
+
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 220px;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 0;
+        padding: 70px 12px 18px;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        z-index: 1001;
+    }
+
+    .sidebar.menu-open {
+        transform: translateX(0);
+    }
+
+    .sidebar .logo {
+        position: absolute;
+        top: 17px;
+        left: 12px;
+    }
+
+    .sidebar .logo-text h1 {
+        font-size: 14px;
+    }
+
+    .sidebar .logo-text p {
+        font-size: 6px;
+    }
+
+
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .menu a {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        min-height: 38px;
+        gap: 15px;
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+
+
+    body.menu-visible::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+    }
+
+    body.menu-visible .menu-toggle {
+        left: 230px;
+    }
+
+
+
+    main {
+        margin-left: 0;
+        width: 100%;
+        padding: 65px 14px 20px;
+    }
+
+    .h1_admin {
+        margin: 10px 0 18px;
+        font-size: 22px;
+        overflow-wrap: anywhere;
+    }
+
+
+
+    .cards_main {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-top: 14px;
+        margin-bottom: 24px;
+    }
+
+    .card {
+        width: 100%;
+        padding: 14px;
+    }
+
+    .card-header {
+        gap: 12px;
+    }
+
+    .icon-box {
+        width: 38px;
+        height: 38px;
+    }
+
+    .card h1 {
+        margin-left: 50px;
+        font-size: 24px;
+    }
+
+    .card-info,
+    .vagas-texto,
+    .barra-vagas {
+        margin-left: 50px;
+    }
+
+    .card-info {
+        font-size: 11px;
+    }
+
+    .card-info p {
+        font-size: 10px;
+        white-space: normal;
+    }
+
+    .vagas-texto {
+        font-size: 11px;
+    }
+
+
+
+    section {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        margin-top: 20px;
+        padding-bottom: 18px;
+    }
+
+    .veiculo,
+    .status,
+    .video {
+        grid-column: 1;
+        grid-row: auto;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .cards {
+        width: 100%;
+        padding: 16px;
+    }
+
+    .cards h1 {
+        font-size: 17px;
+        margin-bottom: 15px;
+    }
+
+    .cards p {
+        overflow-wrap: anywhere;
+    }
+
+
+
+    .legenda-movimento {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+    }
+
+    .legenda-movimento p {
+        font-size: 11px;
+    }
+
+    #grafico_Linha {
+        width: 100%;
+        height: 200px;
+        margin-top: 12px;
+    }
+
+    .grafico-status-container {
+        width: 100%;
+        max-width: 190px;
+        margin: 8px auto 18px;
+        bottom: 0;
+    }
+
+    #grafico_pizza {
+        margin-top: 0;
+    }
+
+    .centro-grafico {
+        top: 0;
+        padding-top: 0;
+    }
+
+
+
+    .imagem-veiculo {
+        display: block;
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    #status_Entrada_Saida {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 13px;
+    }
+
+
+
+    .historico-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        padding-bottom: 18px;
+    }
+
+    .historico-card {
+        width: 100%;
+        padding: 12px;
+        overflow: hidden;
+    }
+
+    .historico-header {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .historico-titulo {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 7px;
+        min-width: 0;
+    }
+
+    .historico-titulo h1 {
+        font-size: 14px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .historico-icone {
+        width: 17px;
+        height: 17px;
+    }
+
+    .ver-todas {
+        font-size: 11px;
+    }
+
+    .historico-tabela {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .historico-linha {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 2px;
+        font-size: 10px;
+    }
+
+    .historico-linha > span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .historico-colunas {
+        font-size: 9px;
+    }
+
+    .tipo-veiculo {
+        min-width: 0;
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+}
+
+
+
+@media (max-width: 350px) {
+
+    .sidebar {
+        width: 205px;
+    }
+
+    body.menu-visible .menu-toggle {
+        left: 212px;
+    }
+
+    main {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .cards_main {
+        gap: 10px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .card h1 {
+        font-size: 21px;
+    }
+
+    .card h1,
+    .card-info,
+    .vagas-texto,
+    .barra-vagas {
+        margin-left: 42px;
+    }
+
+    .cards {
+        padding: 12px;
+    }
+
+    .historico-card {
+        padding: 9px;
+    }
+
+    .historico-linha {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+        gap: 3px;
+        font-size: 9px;
+    }
+
+    .tipo-veiculo {
+        padding: 3px 4px;
+        font-size: 8px;
+    }
+
+    #grafico_Linha {
+        height: 170px;
+    }
+}

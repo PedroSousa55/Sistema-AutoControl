@@ -1,0 +1,148 @@
+
+/* FUNDO DO MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal[hidden] {
+    display: none;
+}
+
+/* CONTEÚDO */
+.modal-conteudo {
+    width: 460px;
+    max-width: 100%;
+    background: #080b0e;
+    border: 1px solid #252c35;
+    border-radius: 15px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: aparecerModal 0.25s ease;
+    box-sizing: border-box;
+}
+
+/* ANIMAÇÃO */
+@keyframes aparecerModal {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* TÍTULO */
+.modal-conteudo h2 {
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 700;
+    margin: 0 0 35px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* FORMULÁRIO */
+.modal-conteudo form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* CAMPOS */
+.modal-conteudo input {
+    width: 100%;
+    height: 58px;
+    padding: 0 18px;
+    background: #10151c;
+    border: 1px solid #252c35;
+    border-radius: 9px;
+    outline: none;
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+.modal-conteudo input::placeholder {
+    color: #687386;
+}
+
+.modal-conteudo input:focus {
+    border-color: #e85d16;
+    box-shadow: 0 0 0 3px rgba(232, 93, 22, 0.12);
+}
+
+/* BOTÕES */
+.modal-botoes {
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.modal-botoes button {
+    flex: 1;
+    height: 52px;
+    border: none;
+    border-radius: 8px;
+    background: #e85d16;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-botoes button:hover {
+    background: #ff7027;
+    transform: translateY(-2px);
+}
+
+.modal-botoes button:active {
+    transform: scale(0.97);
+}
+
+/* TEXTO DE CONFIRMAÇÃO */
+.modal-conteudo .texto-modal {
+    color: #aab2bf;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 500px) {
+    .modal-conteudo {
+        padding: 30px 22px;
+    }
+
+    .modal-conteudo h2 {
+        font-size: 30px;
+        margin-bottom: 25px;
+    }
+
+    .modal-botoes {
+        gap: 10px;
+    }
+
+    .modal-botoes button {
+        font-size: 14px;
+    }
+}

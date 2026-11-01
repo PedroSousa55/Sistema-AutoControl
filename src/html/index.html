@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoControl | Login</title>
+  <link rel="stylesheet" href="/src/css/layout/index/main.css">
+</head>
+<body>
+  <main class="login-page">
+    <section class="login-panel">
+      <header class="brand">
+        <img class="brand-icon" src="src/css/img/logo-carro.svg" alt="Ícone de carro">
+        <div class="brand-text">
+          <h1>Auto<span>Control</span></h1>
+          <p>Controle de Entrada e Saída de Veículos</p>
+        </div>
+      </header>
+
+      <div class="login-content">
+        <h2>Bem-vindo!</h2>
+        <p class="subtitle">Faça login para continuar.</p>
+
+        <form id="loginForm">
+          <label class="input-field plate-field" for="placa">
+            <span class="field-icon" aria-hidden="true"> > </span>
+            <input
+              type="text"
+              id="placa"
+              name="placa"
+              placeholder="Placa do carro (ex.: ABC1D23)"
+              autocomplete="off"
+              maxlength="7"
+              aria-label="Placa do carro"
+              required
+            >
+          </label>
+          <a href="/src/html/login.html" class="outro" id="esqueceuSenha">Outro...</a>
+          <button class="submit-button" type="submit">
+            <span>Consultar</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg>
+          </button>
+          <p class="message" id="message" role="status"></p>
+          
+        </form>
+
+      </div>
+    </section>
+    <div class="photo-panel" aria-hidden="true"></div>
+  </main>
+  <script src="src/script/index.js" defer></script>
+</body>
+</html>

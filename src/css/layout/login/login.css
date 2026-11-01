@@ -1,0 +1,360 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --laranja: #e85d16;
+    --fundo: #050607;
+    --campo: #10151c;
+    --borda: #252c35;
+    --texto: #f5f5f5;
+    --cinza: #778392;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+}
+
+body {
+    min-height: 100vh;
+    padding: 3px 15px;
+}
+
+.tela-login {
+    position: relative;
+    width: 100%;
+    max-width: 1500px;
+    min-height: calc(100vh - 6px);
+    margin: 0 auto;
+    overflow: hidden;
+    background: var(--fundo);
+    border: 1px solid #202020;
+    border-radius: 5px;
+}
+
+.painel-login {
+    position: relative;
+    z-index: 2;
+    width: 48%;
+    min-height: calc(100vh - 6px);
+    padding: 75px 50px 40px;
+    background: linear-gradient(
+        90deg,
+        #030405 0%,
+        #030405 70%,
+        rgba(3, 4, 5, 0.95) 85%,
+        rgba(3, 4, 5, 0.75) 100%
+    );
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 55px;
+}
+
+.logo-img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.logo-texto h1 {
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.logo-texto h1 span {
+    color: var(--laranja);
+}
+
+.logo-texto p {
+    margin-top: 5px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #e0e0e0;
+}
+
+.conteudo-login {
+    width: 100%;
+    max-width: 430px;
+}
+
+.conteudo-login h2 {
+    margin: 0 0 5px 5px;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.subtitulo {
+    margin: 0 0 28px 5px;
+    color: #d0d0d0;
+    font-size: 12px;
+}
+
+#formLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+}
+
+.campo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 55px;
+    padding: 0 14px;
+    background: var(--campo);
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    color: #b5bdc7;
+}
+
+.campo:focus-within {
+    border-color: var(--laranja);
+    box-shadow: 0 0 0 2px rgba(232, 93, 22, 0.12);
+}
+
+.icone-campo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    flex-shrink: 0;
+    font-size: 18px;
+    color: #d4d9df;
+}
+
+.campo input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.campo input::placeholder {
+    color: var(--cinza);
+    opacity: 1;
+}
+
+.mostrar-senha {
+    display: grid;
+    place-items: center;
+    padding: 3px;
+    border: none;
+    background: transparent;
+    color: #8e969f;
+    cursor: pointer;
+}
+
+.mostrar-senha svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.opcoes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: -4px;
+    font-size: 11px;
+    color: var(--cinza);
+}
+
+.lembrar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.lembrar input {
+    width: 13px;
+    height: 13px;
+    accent-color: var(--laranja);
+}
+
+.opcoes a {
+    color: var(--cinza);
+    text-decoration: none;
+}
+
+.opcoes a:hover {
+    color: var(--texto);
+}
+
+.botao-entrar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: center;
+    width: calc(100% - 22px);
+    min-height: 51px;
+    margin-top: 0;
+    padding: 0 23px;
+    border: 1px solid #bd4b12;
+    border-radius: 8px;
+    background: var(--laranja);
+    color: #080808;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.botao-entrar:hover {
+    background: #f16a22;
+}
+
+.botao-entrar:active {
+    transform: scale(0.99);
+}
+
+.botao-entrar svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.mensagem {
+    min-height: 14px;
+    margin-top: -8px;
+    text-align: center;
+    font-size: 11px;
+    color: #f4a078;
+}
+
+.fundo-imagem {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background:
+        linear-gradient(
+            90deg,
+            #030405 0%,
+            rgba(3, 4, 5, 0.98) 25%,
+            rgba(3, 4, 5, 0.85) 40%,
+            rgba(3, 4, 5, 0.3) 62%,
+            rgba(3, 4, 5, 0.05) 100%
+        ),
+        url("/src/css/img/fundo-login.jpg") center / cover no-repeat;
+}
+
+@media (max-width: 900px) {
+    .painel-login {
+        width: 60%;
+        padding-left: 35px;
+        padding-right: 35px;
+    }
+
+    .logo-texto h1 {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+
+    .tela-login {
+        min-height: 100vh;
+        border: none;
+        border-radius: 0;
+    }
+
+    .painel-login {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        min-height: 100vh;
+        padding: 45px 25px 30px;
+        background: rgba(3, 4, 5, 0.78);
+    }
+
+    .fundo-imagem {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(3, 4, 5, 0.92),
+                rgba(3, 4, 5, 0.7)
+            ),
+            url("/src/css/img/fundo-login.jpg") center / cover no-repeat;
+    }
+
+    .logo {
+        gap: 12px;
+        margin-bottom: 45px;
+    }
+
+    .logo-img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .logo-texto h1 {
+        font-size: 28px;
+    }
+
+    .logo-texto p {
+        max-width: 230px;
+        font-size: 10px;
+    }
+
+    .conteudo-login {
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .campo {
+        min-height: 50px;
+    }
+
+    .botao-entrar {
+        min-height: 47px;
+    }
+}
+
+@media (max-height: 650px) and (min-width: 601px) {
+    .painel-login {
+        padding-top: 30px;
+    }
+
+    .logo {
+        margin-bottom: 28px;
+    }
+
+    .subtitulo {
+        margin-bottom: 20px;
+    }
+
+    #formLogin {
+        gap: 13px;
+    }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <link rel="stylesheet" href="../css/layout/user/user.css">
+    <script src="../script/modules/user.js" defer></script>
+</head>
+<body>
+    <main class="usuario">
+
+    <section class="card-permanencia">
+        <p class="titulo-card">Horário de Permanência</p>
+
+        <div class="relogio">
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40"></circle>
+                <line x1="50" y1="27" x2="50" y2="50"></line>
+                <line x1="50" y1="50" x2="64" y2="64"></line>
+            </svg>
+        </div>
+
+        <h2 id="tempo">00:00:00</h2>
+        <span class="legenda-tempo">Tempo de permanência</span>
+    </section>
+
+    <section class="card-vagas">
+
+        <div class="icone-vaga">P</div>
+
+        <div class="info-vaga">
+            <p>Vagas Ocupadas</p>
+            <h2 id="vagasOcupadas">198</h2>
+            <small>de 250 vagas</small>
+
+            <div class="barra">
+                <div class="progresso ocupadas"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="card-vagas">
+
+        <div class="icone-vaga">P</div>
+
+        <div class="info-vaga">
+            <p>Vagas Disponíveis</p>
+            <h2 id="vagasDisponiveis">52</h2>
+            <small>de 250 vagas</small>
+
+            <div class="barra">
+                <div class="progresso disponiveis"></div>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AutoControl</title>
+
+    <link rel="stylesheet" href="/src/css/stye.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../script/api/dashboard.js"></script>
+  </head>
+
+  <body>
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      aria-label="Abrir menu"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" class="hamburger-icon">
+        <path d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <aside class="sidebar">
+      <div class="logo">
+        <svg class="logo-icon car-logo" viewBox="0 0 24 24">
+          <path
+            d="M5.2 11.2 6.7 6.8A2 2 0 0 1 8.6 5.5h6.8a2 2 0 0 1 1.9 1.3l1.5 4.4A2.8 2.8 0 0 1 21 14v4.2a1.3 1.3 0 0 1-1.3 1.3h-1.4a1.3 1.3 0 0 1-1.3-1.3V17H7v1.2a1.3 1.3 0 0 1-1.3 1.3H4.3A1.3 1.3 0 0 1 3 18.2V14a2.8 2.8 0 0 1 2.2-2.8ZM7.3 11h9.4l-1.1-3.2H8.4L7.3 11ZM6.5 14.5a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Zm11 0a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6Z"
+          />
+        </svg>
+
+        <div class="logo-text">
+          <h1>A G N S</h1>
+          <p>Controle de Entrada e Saída de Veículos</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a href="" id="inicio_menu" class="active" data-menu="inicio">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"
+            />
+          </svg>
+          <span>Início</span>
+        </a>
+
+        <a href="" id="veiculo_menu" data-menu="veiculos">
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 14.5L5.5 9.2C5.8 8.2 6.7 7.5 7.8 7.5H16.2C17.3 7.5 18.2 8.2 18.5 9.2L20 14.5"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M3.5 14.5C3.5 13.7 4.2 13 5 13H19C19.8 13 20.5 13.7 20.5 14.5V18C20.5 18.6 20.1 19 19.5 19H4.5C3.9 19 3.5 18.6 3.5 18V14.5Z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M7 13L8.2 9.5H15.8L17 13"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M3.5 15.5H6M18 15.5H20.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+
+            <circle cx="7" cy="18.5" r="1.5" fill="currentColor" />
+            <circle cx="17" cy="18.5" r="1.5" fill="currentColor" />
+          </svg>
+          <span>Veículos</span>
+        </a>
+
+        <a href="#" id="entrada_menu" data-menu="entradas">
+          <svg class="icon" viewBox="0 0 24 24">
+            <rect x="4" y="3" width="14" height="18" rx="2" />
+            <path d="M9 12h9m0 0-3-3m3 3-3 3" />
+          </svg>
+          <span>Entradas</span>
+        </a>
+
+        <a href="#" id="saida_menu" data-menu="saidas">
+          <svg class="icon" viewBox="0 0 24 24">
+            <rect x="4" y="3" width="14" height="18" rx="2" />
+            <path d="M15 12H6m0 0 3-3m-3 3 3 3" />
+          </svg>
+          <span>Saídas</span>
+        </a>
+
+        <a href="#" id="relatorios_menu" data-menu="relatorios">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M5 4h9l5 5v11H5z" />
+            <path d="M14 4v5h5M8 13h8M8 16h6" />
+          </svg>
+          <span>Relatórios</span>
+        </a>
+
+        <a href="#" id="config_menu" data-menu="configuracoes">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" />
+            <path
+              d="m19 13.5 1.2 1-.9 1.6-1.5-.5a7.5 7.5 0 0 1-1.5 1l-.2 1.6h-1.9l-.5-1.5a7.5 7.5 0 0 1-1.8 0l-.7 1.5h-1.8l-.2-1.6a7.5 7.5 0 0 1-1.5-1l-1.5.5-.9-1.6 1.2-1a7.1 7.1 0 0 1 0-2l-1.2-1 .9-1.6 1.5.5a7.5 7.5 0 0 1 1.5-1l.2-1.6h1.8l.7 1.5a7.5 7.5 0 0 1 1.8 0l.5-1.5h1.9l.2 1.6a7.5 7.5 0 0 1 1.5 1l1.5-.5.9 1.6-1.2 1a7.1 7.1 0 0 1 0 2Z"
+            />
+          </svg>
+          <span>Configuração</span>
+        </a>
+      </nav>
+
+      <div class="profile-area">
+        <div class="profile">
+          <div class="profile-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="3" />
+              <path d="M5 20a7 7 0 0 1 14 0" />
+            </svg>
+          </div>
+
+          <div class="profile-info">
+            <strong>Administrador</strong>
+            <span>admin@autocontrol.com</span>
+          </div>
+        </div>
+
+        <a href="#" class="logout" id="sair_button">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4" />
+            <path d="M14 8l4 4-4 4M18 12H9" />
+          </svg>
+          <span>Sair</span>
+        </a>
+      </div>
+    </aside>
+    <!--  menu do ladin -->
+    <div id="admin-header" class="h1_admin">
+      <h1 id="user_h1">Olá, Administrador</h1>
+      <p>Aqui está um resumo do movimneto de veiculos no estacionamento</p>
+    </div>
+    <main id="dashboard">
+      <div class="cards_main">
+        <div class="card veiculo">
+          <div class="card-header">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M5 11l1.5-5h11L19 11" />
+                <path d="M3 13l2-2h14l2 2v5h-3v-2H6v2H3z" />
+                <circle cx="7" cy="14" r="1" />
+                <circle cx="17" cy="14" r="1" />
+              </svg>
+            </div>
+            <p>Total de Veículos</p>
+          </div>
+
+          <h1 id="Totalcarros">248</h1>
+
+          <div class="card-info positivo">
+            <span>↑ 12%</span>
+            <p>em relação ao dia anterior</p>
+          </div>
+        </div>
+
+        <div class="card entrada">
+          <div class="card-header">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
+                <path d="M3 12h11" />
+                <path d="M10 8l4 4-4 4" />
+              </svg>
+            </div>
+            <p>Entradas</p>
+          </div>
+
+          <h1 id="EntradasVeiculos">138</h1>
+
+          <div class="card-info positivo">
+            <span>↑ 12%</span>
+            <p>em relação ao dia anterior</p>
+          </div>
+        </div>
+
+        <div class="card saida">
+          <div class="card-header">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5" />
+                <path d="M21 12H10" />
+                <path d="M14 8l-4 4 4 4" />
+              </svg>
+            </div>
+            <p>Saídas</p>
+          </div>
+
+          <h1 id="SaidasVeiculos">110</h1>
+
+          <div class="card-info positivo">
+            <span>↑ 12%</span>
+            <p>em relação ao dia anterior</p>
+          </div>
+        </div>
+
+        <div class="card vagas">
+          <div class="card-header">
+            <div class="icon-box">
+              <svg class="icon" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+              </svg>
+            </div>
+            <p>Vagas Disponíveis</p>
+          </div>
+
+          <h1 id="Vagasdisponivel">52</h1>
+          <p class="vagas-texto">de 250 vagas</p>
+
+          <!-- Fazer barrinha dps -->
+          <div class="barra-vagas">
+            <div class="barra-vagas-progresso"></div>
+          </div>
+          <!--  -->
+        </div>
+      </div>
+
+      <section>
+        <div class="cards veiculo_Section">
+          <h1>Movimentação de Veículos</h1>
+
+          <div class="legenda-movimento">
+            <p>
+              <span class="ponto entrada"></span>
+              Entradas
+            </p>
+
+            <p>
+              <span class="ponto saida"></span>
+              Saídas
+            </p>
+          </div>
+
+          <div id="grafico_Linha">
+            <canvas id="Grafico_Movimento"></canvas>
+          </div>
+        </div>
+
+        <div class="cards status">
+          <h1>Status atual</h1>
+
+          <div class="grafico-status-container">
+            <div id="grafico_pizza">
+              <canvas id="Grafico_Pizza"></canvas>
+            </div>
+
+            <div class="centro-grafico">
+              <svg
+                class="icone-carro-status"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 11l1.5-5h11L19 11" />
+                <path d="M3 13l2-2h14l2 2v5h-3v-2H6v2H3z" />
+                <circle cx="7.5" cy="13.5" r="1" />
+                <circle cx="16.5" cy="13.5" r="1" />
+              </svg>
+
+              <span class="total-veiculos">248</span>
+            </div>
+          </div>
+
+          <div class="legenda-status">
+            <p>
+              <span class="ponto dentro"></span>
+              <span>Dentro</span>
+              <strong>110</strong>
+            </p>
+
+            <p>
+              <span class="ponto fora"></span>
+              <span>Fora</span>
+              <strong>138</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="cards video">
+          <h1>Entrada / Saída em tempo real</h1>
+
+          <img
+            class="imagem-veiculo"
+            src="../css/img/Rectangle 4.png"
+            alt="Veículo na entrada do estacionamento"
+          />
+
+          <p id="status_Entrada_Saida">
+            <span class="ponto entrada"></span>
+            Entrada liberada
+          </p>
+
+          <p id="status_placa">Placa: SAA-3B24</p>
+        </div>
+      </section>
+
+      <section class="historico-grid">
+        <div class="cards historico-card">
+          <div class="historico-header">
+            <div class="historico-titulo">
+              <svg class="historico-icone entrada-icone" viewBox="0 0 24 24">
+                <path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
+                <path d="M3 12h11m-4-4 4 4-4 4" />
+              </svg>
+
+              <h1>Últimas Entradas</h1>
+            </div>
+          </div>
+
+          <div class="historico-tabela">
+            <div class="historico-linha historico-colunas">
+              <span>Horário</span>
+              <span>Placa</span>
+              <span>Tipo</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:41</span>
+              <span>SAA-3B24</span>
+              <span class="tipo-veiculo entrada-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:37</span>
+              <span>QXV-8D76</span>
+              <span class="tipo-veiculo entrada-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:32</span>
+              <span>RTP-2C10</span>
+              <span class="tipo-veiculo entrada-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:28</span>
+              <span>JKN-5F09</span>
+              <span class="tipo-veiculo entrada-tipo">Moto</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:21</span>
+              <span>OIT-2B72</span>
+              <span class="tipo-veiculo entrada-tipo">Carro</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards historico-card">
+          <div class="historico-header">
+            <div class="historico-titulo">
+              <svg class="historico-icone saida-icone" viewBox="0 0 24 24">
+                <path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5" />
+                <path d="M21 12H10m4-4-4 4 4 4" />
+              </svg>
+
+              <h1>Últimas Saídas</h1>
+            </div>
+          </div>
+
+          <div class="historico-tabela">
+            <div class="historico-linha historico-colunas">
+              <span>Horário</span>
+              <span>Placa</span>
+              <span>Tipo</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:41</span>
+              <span>BVT-1A23</span>
+              <span class="tipo-veiculo saida-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:37</span>
+              <span>KLM-9E87</span>
+              <span class="tipo-veiculo saida-tipo">Moto</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:32</span>
+              <span>MNO-4C56</span>
+              <span class="tipo-veiculo saida-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:28</span>
+              <span>RTY-6H72</span>
+              <span class="tipo-veiculo saida-tipo">Carro</span>
+            </div>
+
+            <div class="historico-linha">
+              <span class="historico-horario">09:21</span>
+              <span>GHS-2D34</span>
+              <span class="tipo-veiculo saida-tipo">Moto</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="modalVeiculo" hidden>
+        <div>
+          <h2 id="tituloModal">Adicionar movimentação</h2>
+
+          <form id="formVeiculo">
+            <label for="horarioVeiculo">Horário</label>
+            <input type="time" id="horarioVeiculo" required />
+
+            <label for="placaVeiculo">Placa</label>
+            <input
+              type="text"
+              id="placaVeiculo"
+              placeholder="ABC-1234"
+              maxlength="8"
+              required
+            />
+
+            <label for="tipoVeiculo">Tipo de veículo</label>
+            <select id="tipoVeiculo" required>
+              <option value="">Selecione</option>
+              <option value="Carro">Carro</option>
+              <option value="Moto">Moto</option>
+              <option value="Caminhão">Caminhão</option>
+            </select>
+
+            <button type="submit">Adicionar</button>
+            <button type="button" onclick="fecharModal()">Cancelar</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- VEÍCULOS -->
+
+    <main id="veiculo_main" style="display: none">
+      <h1 class="h1_txt_veiculo">Veículos</h1>
+
+      <section class="veiculo-section">
+        <div class="header_section">
+          <input
+            class="input_cadastro_veiculo"
+            type="text"
+            id="buscar_veiculo"
+            placeholder="Buscar por placa..."
+          />
+          <a
+            href="#"
+            id="abrir_cadastro_veiculo"
+            class="button_cadastro_veiculo"
+          >
+            + Cadastrar Veículo
+          </a>
+        </div>
+        <div class="veiculo-tabela-container">
+          <table class="veiculo-tabela">
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody id="lista_veiculos">
+              <tr>
+                <td class="placa-veiculo">ABC1D23</td>
+                <td>Carro</td>
+                <td>
+                  <span class="status-veiculo dentro">Dentro</span>
+                </td>
+                <td>
+                  <div class="acoes-veiculo">
+                    <button class="botao-editar" type="button" title="Editar">
+                      Editar
+                    </button>
+                    <button class="botao-excluir" type="button" title="Excluir">
+                      Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="placa-veiculo">DEF4G56</td>
+                <td>Moto</td>
+                <td>
+                  <span class="status-veiculo fora">Fora</span>
+                </td>
+                <td>
+                  <div class="acoes-veiculo">
+                    <button class="botao-editar" type="button" title="Editar">
+                      Editar
+                    </button>
+                    <button class="botao-excluir" type="button" title="Excluir">
+                      Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="placa-veiculo">GHI7J89</td>
+                <td>Carro</td>
+                <td>
+                  <span class="status-veiculo dentro">Dentro</span>
+                </td>
+                <td>
+                  <div class="acoes-veiculo">
+                    <button class="botao-editar" type="button" title="Editar">
+                      Editar
+                    </button>
+                    <button class="botao-excluir" type="button" title="Excluir">
+                      Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="placa-veiculo">JKL2M34</td>
+                <td>Caminhão</td>
+                <td>
+                  <span class="status-veiculo fora">Fora</span>
+                </td>
+                <td>
+                  <div class="acoes-veiculo">
+                    <button class="botao-editar" type="button" title="Editar">
+                      Editar
+                    </button>
+                    <button class="botao-excluir" type="button" title="Excluir">
+                      Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p id="veiculos_vazio" class="veiculos-vazio" style="display: none">
+            Nenhum veículo encontrado.
+          </p>
+        </div>
+        <div class="paginacao-veiculos">
+          <span id="texto_paginacao">Mostrando 1–4 de 4 veículos</span>
+          <div class="botoes-paginacao">
+            <button type="button" id="pagina_anterior" disabled>
+              Anterior
+            </button>
+            <button type="button" id="pagina_atual" class="pagina-ativa">
+              1
+            </button>
+            <button type="button" id="pagina_proxima" disabled>Próxima</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ENTRADAS -->
+
+    <main id="entrada_main" style="display: none">
+      <div class="entrada-conteudo">
+        <h1 class="h1_txt_veiculo">Entradas</h1>
+
+        <div class="entrada-filtros">
+          <input type="date" id="data_inicio" aria-label="Data inicial" />
+          <input type="date" id="data_fim" aria-label="Data final" />
+
+          <button type="button" id="filtrar_entradas">Filtrar</button>
+        </div>
+
+        <div class="entrada-tabela-container">
+          <table class="entrada-tabela">
+            <thead>
+              <tr>
+                <th>Horário</th>
+                <th>Placa</th>
+                <th>Tipo</th>
+                <th>Responsável</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+
+            <tbody id="lista_entradas">
+              <tr>
+                <td>09:41</td>
+                <td>SAA-3B24</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:37</td>
+                <td>BVT-1A23</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:32</td>
+                <td>KLM-9E87</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:28</td>
+                <td>MNO-4G56</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:21</td>
+                <td>QXV-8D76</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:21</td>
+                <td>RTP-2C10</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:21</td>
+                <td>JKN-5F09</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:21</td>
+                <td>OIT-2872</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="entrada-rodape">
+          <span>Mostrando 1 - 8 de 248 entradas</span>
+
+          <div class="entrada-paginacao">
+            <button type="button" class="pagina-ativa">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">4</button>
+            <button type="button">5</button>
+            <button type="button" disabled>...</button>
+            <button type="button" aria-label="Próxima página">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- SAÍDAS -->
+
+    <main id="saida_main" style="display: none">
+      <div class="saida-conteudo">
+        <h1 class="h1_txt_veiculo">Saídas</h1>
+
+        <div class="saida-filtros">
+          <input type="date" id="data_inicio_saida" aria-label="Data inicial" />
+          <input type="date" id="data_fim_saida" aria-label="Data final" />
+
+          <button type="button" id="filtrar_saidas">Filtrar</button>
+        </div>
+
+        <div class="saida-tabela-container">
+          <table class="saida-tabela">
+            <thead>
+              <tr>
+                <th>Horário</th>
+                <th>Placa</th>
+                <th>Tipo</th>
+                <th>Responsável</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <!--  tirar horario -->
+            <tbody id="lista_saidas">
+              <tr>
+                <td>09:41</td>
+                <td>BVT-1A23</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:37</td>
+                <td>KLM-9E87</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:32</td>
+                <td>MNO-4G56</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:28</td>
+                <td>RTY-6H72</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:21</td>
+                <td>GHS-2D34</td>
+                <td>Moto</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:18</td>
+                <td>ABC-1D23</td>
+                <td>Carro</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:15</td>
+                <td>DEF-4G56</td>
+                <td>Moto</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+              <tr>
+                <td>09:10</td>
+                <td>JKL-2M34</td>
+                <td>Caminhão</td>
+                <td>-</td>
+                <td>
+                  <button class="botao-alterar" type="button">Alterar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="saida-rodape">
+          <span>Mostrando 1 - 8 de 248 saídas</span>
+
+          <div class="saida-paginacao">
+            <button type="button" class="pagina-ativa">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">4</button>
+            <button type="button">5</button>
+            <button type="button" disabled>...</button>
+            <button type="button" aria-label="Próxima página">›</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <main id="relatorios_main" style="display: none">
+      <h1 class="h1_txt_veiculo">Relatórios</h1>
+
+      <div class="div_main"></div>
+    </main>
+
+    <main id="config_main" style="display: none">
+      <h1 class="h1_txt_veiculo">Configuração</h1>
+
+      <div class="config-wrapper">
+        <input
+          type="radio"
+          name="config_tab"
+          id="tab_geral"
+          class="config-radio"
+          checked
+        />
+        <input
+          type="radio"
+          name="config_tab"
+          id="tab_usuarios"
+          class="config-radio"
+        />
+        <input
+          type="radio"
+          name="config_tab"
+          id="tab_notificacoes"
+          class="config-radio"
+        />
+
+        <div class="config-tabs">
+          <label for="tab_geral">Geral</label>
+          <label for="tab_usuarios">Usuários</label>
+          <label for="tab_notificacoes">Notificações</label>
+        </div>
+
+        <section class="config-panel" id="painel_geral">
+          <form class="config-card" id="form_config_geral">
+            <div class="config-coluna">
+              <div class="config-campo">
+                <label for="config_nome">Nome do estacionamento:</label>
+                <input type="text" id="config_nome" value="AutoControl" />
+              </div>
+
+              <div class="config-campo">
+                <label for="config_endereco">Endereço:</label>
+                <input
+                  type="text"
+                  id="config_endereco"
+                  value="Av.Exemplo, 123-Centro"
+                />
+              </div>
+
+              <div class="config-campo">
+                <label for="config_cidade">Cidade:</label>
+                <input type="text" id="config_cidade" value="São Luís - MA" />
+              </div>
+
+              <div class="config-campo">
+                <label for="config_vagas">Capacidade total de vagas:</label>
+                <input type="number" id="config_vagas" value="250" min="1" />
+              </div>
+            </div>
+
+            <div class="config-coluna config-coluna-direita">
+              <div class="config-campo">
+                <label for="config_abertura">Horário de funcionamento</label>
+
+                <div class="config-horarios">
+                  <select id="config_abertura" aria-label="Horário de abertura">
+                    <option value="00:00">00:00</option>
+                    <option value="01:00">01:00</option>
+                    <option value="02:00">02:00</option>
+                    <option value="03:00">03:00</option>
+                    <option value="04:00">04:00</option>
+                    <option value="05:00">05:00</option>
+                    <option value="06:00" selected>06:00</option>
+                    <option value="07:00">07:00</option>
+                    <option value="08:00">08:00</option>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="19:00">19:00</option>
+                    <option value="20:00">20:00</option>
+                    <option value="21:00">21:00</option>
+                    <option value="22:00">22:00</option>
+                    <option value="23:00">23:00</option>
+                  </select>
+
+                  <select
+                    id="config_fechamento"
+                    aria-label="Horário de fechamento"
+                  >
+                    <option value="00:00">00:00</option>
+                    <option value="01:00">01:00</option>
+                    <option value="02:00">02:00</option>
+                    <option value="03:00">03:00</option>
+                    <option value="04:00">04:00</option>
+                    <option value="05:00">05:00</option>
+                    <option value="06:00">06:00</option>
+                    <option value="07:00">07:00</option>
+                    <option value="08:00">08:00</option>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                    <option value="19:00">19:00</option>
+                    <option value="20:00">20:00</option>
+                    <option value="21:00">21:00</option>
+                    <option value="22:00" selected>22:00</option>
+                    <option value="23:00">23:00</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="config-switch-linha">
+                <span id="label_entrada_apos"
+                  >Permitir entrada após o horário</span
+                >
+
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    id="config_entrada_apos"
+                    aria-labelledby="label_entrada_apos"
+                    checked
+                  />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                class="config-botao-salvar"
+                id="salvar_config"
+              >
+                Salvar alterações
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="config-panel" id="painel_usuarios">
+          <input
+            type="radio"
+            name="usuario_sub"
+            id="sub_usuario"
+            class="config-radio"
+            checked
+          />
+          <input
+            type="radio"
+            name="usuario_sub"
+            id="sub_login"
+            class="config-radio"
+          />
+
+          <div class="usuario-layout">
+            <aside class="usuario-perfil">
+              <div class="usuario-avatar-area">
+                <div class="usuario-avatar">
+                  <!-- aqui ficaria a foto de perfil -->
+
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M5 20a7 7 0 0 1 14 0" />
+                  </svg>
+                </div>
+
+                <span class="usuario-avatar-badge" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="m6 12.5 4 4 8-9" />
+                  </svg>
+                </span>
+              </div>
+
+              <h2 class="usuario-saudacao">
+                Olá, <span id="usuario_saudacao_nome">Administrador</span>!
+              </h2>
+
+              <nav class="usuario-menu">
+                <label for="sub_usuario" class="usuario-item">
+                  <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="3.5" />
+                    <path d="M5 20a7 7 0 0 1 14 0" />
+                  </svg>
+                  <span>Usuário</span>
+                </label>
+
+                <label for="sub_login" class="usuario-item">
+                  <svg class="icon" viewBox="0 0 24 24">
+                    <rect x="5" y="11" width="14" height="9" rx="2" />
+                    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                  </svg>
+                  <span>Login e Senha</span>
+                </label>
+                <button
+                  type="button"
+                  class="usuario-item usuario-item-sair"
+                  id="sair_config"
+                >
+                  <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4" />
+                    <path d="M14 8l4 4-4 4M18 12H9" />
+                  </svg>
+                  <span>Sair</span>
+                </button>
+              </nav>
+            </aside>
+
+            <div class="usuario-conteudo" id="conteudo_usuario">
+              <form class="usuario-card" id="form_usuario" novalidate>
+                <h2 class="usuario-titulo">Dados Pessoais</h2>
+                <div class="usuario-grid">
+                  <div class="usuario-campo">
+                    <label for="usuario_nome">Nome</label>
+                    <input
+                      type="text"
+                      id="usuario_nome"
+                      value="Vitória"
+                      readonly
+                    />
+                  </div>
+                  <div class="usuario-campo">
+                    <label for="usuario_sobrenome">Sobrenome</label>
+                    <input
+                      type="text"
+                      id="usuario_sobrenome"
+                      value="Alvina"
+                      readonly
+                    />
+                  </div>
+                  <div class="usuario-campo usuario-campo-full">
+                    <label for="usuario_email">E-mail</label>
+
+                    <div class="usuario-input-icone">
+                      <input
+                        type="email"
+                        id="usuario_email"
+                        value="vitoriaalvina@gmail.com"
+                        readonly
+                      />
+                      <svg
+                        class="usuario-verificado"
+                        viewBox="0 0 24 24"
+                        aria-label="E-mail verificado"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m7.5 12.5 3 3 6-6.5" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="usuario-campo">
+                    <label for="usuario_telefone">Número</label>
+                    <input
+                      type="tel"
+                      id="usuario_telefone"
+                      value="(98) 3245-0022"
+                      readonly
+                    />
+                  </div>
+                  <div class="usuario-campo">
+                    <label for="usuario_localizacao">Localização</label>
+                    <select id="usuario_localizacao" disabled>
+                      <option value="São Luís - MA" selected>
+                        São Luís - MA
+                      </option>
+                      <option value="Imperatriz - MA">Imperatriz - MA</option>
+                      <option value="Caxias - MA">Caxias - MA</option>
+                      <option value="Timon - MA">Timon - MA</option>
+                      <option value="Teresina - PI">Teresina - PI</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="usuario-acoes">
+                  <button
+                    type="button"
+                    class="usuario-botao-editar"
+                    id="editar_usuario"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="submit"
+                    class="usuario-botao-salvar"
+                    id="salvar_usuario"
+                    disabled
+                  >
+                    salvar
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="usuario-conteudo" id="conteudo_login">
+              <div class="usuario-card usuario-card-vazio">
+                <h2 class="usuario-titulo">Login e Senha</h2>
+                <p>Alteração de login e senha em breve.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="config-panel" id="painel_notificacoes">
+          <div class="config-card config-card-vazio">
+            <p>Configurações de notificações em breve.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modalzin -->
+
+    <div id="modal" class="modal" hidden>
+      <div id="modal-conteudo" class="modal-conteudo"></div>
+    </div>
+  </body>
+</html>

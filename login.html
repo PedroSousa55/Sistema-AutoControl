@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoControl | Login</title>
+    <link rel="stylesheet" href="/src/css/layout/login/login.css" />
+    <script type="module" src="/src/script/api/login.js"></script>
+  </head>
+  <body>
+    <main class="tela-login">
+      <section class="painel-login">
+        <header class="logo">
+          <img
+            class="logo-img"
+            src="/src/css/img/logo-carro.svg"
+            alt="Ícone de carro"
+          />
+
+          <div class="logo-texto">
+            <h1>Auto<span>Control</span></h1>
+            <p>Controle de Entrada e Saída de Veículos</p>
+          </div>
+        </header>
+
+        <div class="conteudo-login">
+          <h2>Bem-vindo!</h2>
+          <p class="subtitulo">Faça login para continuar.</p>
+
+          <form id="formLogin">
+            <label class="campo">
+              <span class="icone-campo" aria-hidden="true">♙</span>
+
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Digite email..."
+                autocomplete="email"
+                required
+              />
+            </label>
+
+            <label class="campo">
+              <span class="icone-campo" aria-hidden="true">♙</span>
+
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Senha"
+                autocomplete="current-password"
+                required
+              />
+
+              <button
+                class="mostrar-senha"
+                id="mostrarSenha"
+                type="button"
+                aria-label="Mostrar senha"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z" />
+                  <circle cx="12" cy="12" r="2.5" />
+                  <path d="M3 3 21 21" />
+                </svg>
+              </button>
+            </label>
+            <div class="opcoes">
+              <label class="lembrar">
+                <input type="checkbox" id="lembrar" />
+                <span>Lembrar de mim</span>
+              </label>
+              <a href="/src/html/register.html" id="esqueceuSenha"
+                >Não possue conta?</a
+              >
+            </div>
+            <button class="botao-entrar" id="botao-entrar" type="submit">
+              <span id="login_button">Entrar</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 12h15M13 5l7 7-7 7" />
+              </svg>
+            </button>
+            <p class="mensagem" id="mensagem" role="status"></p>
+          </form>
+        </div>
+      </section>
+      <div class="fundo-imagem" aria-hidden="true"></div>
+    </main>
+  </body>
+</html>
