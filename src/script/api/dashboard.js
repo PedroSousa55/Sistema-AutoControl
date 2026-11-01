@@ -1,4 +1,4 @@
-import app from "./api.js";
+import { usuarioApi, dashboardApi } from "./api.js";
 
 const btnSair = document.getElementById("sair_button");
 
@@ -30,7 +30,7 @@ async function protegePagina() {
   }
 
   try {
-    const { user } = await app.findUserAuthenticator();
+    const { user } = await usuarioApi.findUserAuthenticator();
     return user;
   } catch (error) {
     console.error(error);

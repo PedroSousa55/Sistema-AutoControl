@@ -7,7 +7,7 @@ async function verifyResponse(response) {
   return response;
 }
 
-const url_base = "http://localhost:3333/usuario";
+const API = "http://localhost:3333";
 
 function obterToken() {
   return localStorage.getItem("token");
@@ -28,10 +28,10 @@ function httpHeader() {
   };
 }
 
-const app = {
+const usuarioApi = {
   async listUser() {
     try {
-      const response = await fetch(`${url_base}`, {
+      const response = await fetch(`${API}/usuario`, {
         method: "GET",
         headers: httpAuth(),
       });
@@ -40,13 +40,13 @@ const app = {
       return response.json();
     } catch (error) {
       console.error(error);
-      throw error; 
+      throw error;
     }
   },
 
   async registerUser(register) {
     try {
-      const response = await fetch(`${url_base}/register`, {
+      const response = await fetch(`${API}/usuario/register`, {
         method: "POST",
         headers: httpAuth(),
         body: JSON.stringify(register),
@@ -61,7 +61,7 @@ const app = {
   },
   async loginUser(login) {
     try {
-      const response = await fetch(`${url_base}/login`, {
+      const response = await fetch(`${API}/usuario/login`, {
         method: "POST",
         headers: httpHeader(),
         body: JSON.stringify(login),
@@ -76,7 +76,7 @@ const app = {
   },
   async findUserAuthenticator() {
     try {
-      const response = await fetch(`${url_base}/auth`, {
+      const response = await fetch(`${API}/usuario/auth`, {
         method: "GET",
         headers: httpAuth(),
       });
@@ -91,4 +91,21 @@ const app = {
   },
 };
 
-export default app;
+const dashboardApi = {
+  async resumo() {
+    try {
+      const response = await fetch(`${API}/dashboard/resumo`, {
+        method: "GET",
+        headers: httpAuth(),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+};
+
+export default { usuarioApi, dashboardApi };

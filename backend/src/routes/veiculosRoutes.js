@@ -1,6 +1,6 @@
 import express from "express";
 import VeiculosController from "../controllers/veiculoController.js";
-import admMiddleware from "../middlewares/admMiddleware";
+import admMiddleware from "../middlewares/admMiddleware.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 

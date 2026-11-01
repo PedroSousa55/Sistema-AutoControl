@@ -1,4 +1,4 @@
-import app from "./api.js";
+import { usuarioApi } from "./api.js";
 
 const form = document.getElementById("formLogin");
 const emailInput = document.getElementById("email");
@@ -45,7 +45,7 @@ async function manipulaForm(e) {
   mostrarMessage("", "");
 
   try {
-    const resultado = await app.loginUser({ email, senha });
+    const resultado = await usuarioApi.loginUser({ email, senha });
 
     localStorage.setItem("token", resultado.token);
 
