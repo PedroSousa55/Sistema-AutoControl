@@ -1,5 +1,3 @@
-import { response } from "express";
-
 async function verifyResponse(response) {
   if (!response.ok) {
     const erro = await response.json().catch(() => ({}));
@@ -114,13 +112,13 @@ const dashboardApi = {
 const veiculoApi = {
   async listVeiculos() {
     try {
-      const reponse = await fetch(`${API}/veiculos`, {
+      const response = await fetch(`${API}/veiculos`, {
         method: "GET",
         headers: httpAuth(),
       });
 
-      await verifyResponse(reponse);
-      return response.json;
+      await verifyResponse(response);
+      return response.json();
     } catch (error) {
       console.error(error);
       throw error;

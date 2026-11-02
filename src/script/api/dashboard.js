@@ -21,6 +21,7 @@ btnSair.addEventListener("click", (e) => {
   sairDashboard();
 });
 
+// Verifica se o usuário está autenticado
 async function protegePagina() {
   const token = localStorage.getItem("token");
 
@@ -42,6 +43,26 @@ async function protegePagina() {
 
     sairDashboard();
     return null;
+  }
+}
+
+// Carrega os dados do dashboard
+async function carregarResumo() {
+  try {
+    const resumo = await dashboardApi.resumo();
+
+    document.getElementById("Totalcarros").textContent = resumo.dentro;
+
+    document.getElementById("EntradasVeiculos").textContent =
+      resumo.entradas_hoje;
+
+    document.getElementById("SaidasVeiculos").textContent = resumo.saidas_hoje;
+
+    document.getElementById("Vagasdisponivel").textContent =
+      resumo.vagas_disponiveis;
+  } catch (error) {
+    console.error("Erro ao carregar dashboard:", error);
+    alert("Não foi possível carregar os dados do dashboard.");
   }
 }
 
@@ -105,8 +126,10 @@ function configPermissao(tipo) {
   telaSelecionada("dashboard");
 }
 
+// Inicialização
 const user = await protegePagina();
 
 if (user) {
   configPermissao(user.tipo);
+  carregarResumo();
 }
