@@ -39,105 +39,79 @@ class MovimentacaoController {
     }
   }
 
-  //registrando entrada de veiculo
+  // registrando entrada de veículo
   static async registerEntrada(req, res) {
     try {
-      const { placa, tipo, data_entrada } = req.body;
+      const { placa, tipo } = req.body;
 
-      if (!placa || !tipo || !data_entrada) {
-        let message = "Todos os campos são obrigatórios.";
-        return res.status(400).json({ message });
+      if (!placa || !tipo) {
+        return res.status(400).json({
+          message: "Placa e tipo são obrigatórios.",
+        });
       }
 
       if (tipo !== "MOTO" && tipo !== "CARRO") {
-        let message = "Informe o tipo de veiculo valido.";
-        return res.status(400).json({ message });
-      }
-
-      const data = new Date(data_entrada);
-      //verifica se a data informada é uma data valida
-      if (isNaN(data.getTime())) {
         return res.status(400).json({
-          message: "Data de entrada invalida.",
-        });
-      }
-      if (data > new Date()) {
-        return res.status(400).json({
-          message: "A data de entrada não pode ser acima da data atual.",
+          message: "Informe um tipo de veículo válido.",
         });
       }
 
       const placaDentro = await modelMovimentacao.findMovimentacaoPlaca(placa);
 
       if (placaDentro) {
-        let message = "Veiculo já está dentro do estacionamento.";
-        return res.status(409).json({ message });
+        return res.status(409).json({
+          message: "Veículo já está dentro do estacionamento.",
+        });
       }
 
       let veiculo = await veiculoModel.findVeiculoPlaca(placa);
 
       if (veiculo) {
-        //vai veirificar se o tipo está correto
         if (veiculo.tipo !== tipo) {
           return res.status(409).json({
             message: "O tipo informado é diferente do veículo cadastrado.",
           });
         }
       } else {
-        //se veiculo nao existe vamos cadastrar ele no sistema
         const result = await veiculoModel.veiculoRegister(placa, tipo);
 
         veiculo = {
           id: result.insertId,
-          placa: placa,
-          tipo: tipo,
+          placa,
+          tipo,
         };
       }
 
       const result = await modelMovimentacao.registerEntrada(
         veiculo.id,
         req.user.id,
-        data_entrada,
         "MANUAL",
       );
 
-      let message = "Entrada registrada com sucesso.";
       return res.status(201).json({
-        message,
+        message: "Entrada registrada com sucesso.",
         id: result.insertId,
       });
     } catch (error) {
       console.error(error);
+
       return res.status(500).json({
         message: "Erro de servidor!",
       });
     }
   }
 
-  // registrado saida do veiculo
+  // registrando saída de veículo
   static async registerSaida(req, res) {
     try {
-      const { placa, data_saida } = req.body;
+      const { placa } = req.body;
 
-      if (!placa || !data_saida) {
-        let message = "Todos os campos são obrigatórios.";
-        return res.status(400).json({ message });
-      }
-
-      //Validando se a data de saida é valida e nao esta no futuro.
-      const data = new Date(data_saida);
-
-      if (isNaN(data.getTime())) {
+      if (!placa) {
         return res.status(400).json({
-          message: "Data de saida invalida.",
+          message: "Informe a placa do veículo.",
         });
       }
 
-      if (data > new Date()) {
-        return res.status(400).json({
-          message: "A data de saída não pode ser futura.",
-        });
-      }
       const movimentacaoAberta =
         await modelMovimentacao.findMovimentacaoPlaca(placa);
 
@@ -147,16 +121,7 @@ class MovimentacaoController {
         });
       }
 
-      const dataEntrada = new Date(movimentacaoAberta.data_entrada);
-
-      if (data < dataEntrada) {
-        return res.status(400).json({
-          message: "A data de saída não pode ser anterior à entrada.",
-        });
-      }
-
       const result = await modelMovimentacao.registerSaida(
-        data_saida,
         req.user.id,
         "MANUAL",
         movimentacaoAberta.id,
@@ -168,19 +133,18 @@ class MovimentacaoController {
         });
       }
 
-      let message = "Saida registrada com sucesso.";
       return res.status(200).json({
-        message,
+        message: "Saída registrada com sucesso.",
         id: movimentacaoAberta.id,
       });
     } catch (error) {
       console.error(error);
+
       return res.status(500).json({
         message: "Erro de servidor!",
       });
     }
   }
-
   //falta o editar a movimentação
   static async editMovimentacao(req, res) {
     try {

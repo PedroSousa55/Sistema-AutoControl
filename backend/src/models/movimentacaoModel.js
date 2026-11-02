@@ -37,29 +37,25 @@ async function findMovimentacaoPlaca(placa) {
   }
 }
 
-//registra entrada
-async function registerEntrada(
-  veiculo_id,
-  usuario_entrada_id,
-  data_entrada,
-  origem_entrada,
-) {
+// registra entrada com data e hora geradas pelo MySQL
+async function registerEntrada(veiculo_id, usuario_entrada_id, origem_entrada) {
   try {
     const sql = `
-    INSERT INTO movimentacoes (
-    veiculo_id,
-    usuario_entrada_id,
-    data_entrada,
-    origem_entrada
-    )
-    VALUES (?, ?, ?, ?);
+      INSERT INTO movimentacoes (
+        veiculo_id,
+        usuario_entrada_id,
+        data_entrada,
+        origem_entrada
+      )
+      VALUES (?, ?, NOW(), ?);
     `;
+
     const [dados] = await conect.query(sql, [
       veiculo_id,
       usuario_entrada_id,
-      data_entrada,
       origem_entrada,
     ]);
+
     return dados;
   } catch (error) {
     console.error(error);
@@ -68,29 +64,32 @@ async function registerEntrada(
 }
 
 //registra saida
-async function registerSaida(data_saida, usuario_saida_id, origem_saida, id) {
+// registra saída com data e hora geradas pelo MySQL
+async function registerSaida(usuario_saida_id, origem_saida, id) {
   try {
     const sql = `
-    UPDATE movimentacoes
-    SET
-    data_saida = ?,
-    usuario_saida_id = ?,
-    origem_saida = ?
-    WHERE id = ?
-    AND data_saida IS NULL; 
+      UPDATE movimentacoes
+      SET
+        data_saida = NOW(),
+        usuario_saida_id = ?,
+        origem_saida = ?
+      WHERE id = ?
+      AND data_saida IS NULL;
     `;
+
     const [dados] = await conect.query(sql, [
-      data_saida,
       usuario_saida_id,
       origem_saida,
       id,
     ]);
+
     return dados;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
 //busca movimentação pelo id
 async function findMovimentacaoId(id) {
   try {
