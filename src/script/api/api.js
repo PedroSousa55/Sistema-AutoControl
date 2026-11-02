@@ -108,4 +108,4 @@ const dashboardApi = {
   },
 };
 
-export default { usuarioApi, dashboardApi };
+export { usuarioApi, dashboardApi };
