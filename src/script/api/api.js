@@ -1,3 +1,5 @@
+import { response } from "express";
+
 async function verifyResponse(response) {
   if (!response.ok) {
     const erro = await response.json().catch(() => ({}));
@@ -59,6 +61,7 @@ const usuarioApi = {
       throw error;
     }
   },
+
   async loginUser(login) {
     try {
       const response = await fetch(`${API}/usuario/login`, {
@@ -108,4 +111,84 @@ const dashboardApi = {
   },
 };
 
-export { usuarioApi, dashboardApi };
+const veiculoApi = {
+  async listVeiculos() {
+    try {
+      const reponse = await fetch(`${API}/veiculos`, {
+        method: "GET",
+        headers: httpAuth(),
+      });
+
+      await verifyResponse(reponse);
+      return response.json;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  async registerVeiculo(veiculo) {
+    try {
+      const response = await fetch(`${API}/veiculos/placa/register`, {
+        method: "POST",
+        headers: httpAuth(),
+        body: JSON.stringify(veiculo),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+};
+
+const movimentacaoApi = {
+  async listMovimentacoes() {
+    try {
+      const response = await fetch(`${API}/movimentacao`, {
+        method: "GET",
+        headers: httpAuth(),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  async registerEntrada(movimentacao) {
+    try {
+      const response = await fetch(`${API}/movimentacao/register/entrada`, {
+        method: "POST",
+        headers: httpAuth(),
+        body: JSON.stringify(movimentacao),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  async registerSaida(movimentacao) {
+    try {
+      const response = await fetch(`${API}/movimentacao/register/saida`, {
+        method: "POST",
+        headers: httpAuth(),
+        body: JSON.stringify(movimentacao),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+};
+
+export { usuarioApi, dashboardApi, veiculoApi, movimentacaoApi };
