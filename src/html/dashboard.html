@@ -360,7 +360,7 @@
           </div>
         </div>
       </section>
-
+      <!-- verificar de esse modal vai ficar ou nao -->
       <div id="modalVeiculo" hidden>
         <div>
           <h2 id="tituloModal">Adicionar movimentação</h2>
@@ -422,7 +422,6 @@
               <tr>
                 <th>Placa</th>
                 <th>Tipo</th>
-                <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -464,6 +463,13 @@
           <input type="date" id="data_fim" aria-label="Data final" />
 
           <button type="button" id="filtrar_entradas">Filtrar</button>
+          <a
+            href="#"
+            id="abrir_cadastro_entrada"
+            class="button_cadastro_veiculo"
+          >
+            + Cadastrar Entrada
+          </a>
         </div>
 
         <div class="entrada-tabela-container">
@@ -501,6 +507,9 @@
           <input type="date" id="data_fim_saida" aria-label="Data final" />
 
           <button type="button" id="filtrar_saidas">Filtrar</button>
+          <a href="#" id="abrir_cadastro_saida" class="button_cadastro_veiculo">
+            + Cadastrar Saída
+          </a>
         </div>
 
         <div class="saida-tabela-container">

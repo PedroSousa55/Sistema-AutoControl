@@ -1,6 +1,20 @@
-import { usuarioApi, dashboardApi } from "./api.js";
+import { usuarioApi, dashboardApi, veiculoApi } from "./api.js";
 
 const btnSair = document.getElementById("sair_button");
+
+const btnAbrirCadastroVeiculo = document.getElementById(
+  "abrir_cadastro_veiculo",
+);
+
+// Abre o modal de cadastro de veículo
+btnAbrirCadastroVeiculo.addEventListener("click", (e) => {
+  e.preventDefault();
+  abrirFormularioVeiculo();
+});
+
+// Elementos do modal
+const modal = document.getElementById("modal");
+const modalConteudo = document.getElementById("modal-conteudo");
 
 const TELAS = [
   { menu: "inicio_menu", tela: "dashboard", restrita: false },
@@ -10,6 +24,89 @@ const TELAS = [
   { menu: "relatorios_menu", tela: "relatorios_main", restrita: true },
   { menu: "config_menu", tela: "config_main", restrita: true },
 ];
+
+// Abre o modal com o conteúdo informado
+function abrirModal(conteudo) {
+  modalConteudo.innerHTML = conteudo;
+  modal.hidden = false;
+}
+
+// Fecha o modal e limpa seu conteúdo
+function fecharModal() {
+  modal.hidden = true;
+  modalConteudo.innerHTML = "";
+}
+
+// Abre o formulário de cadastro de veículo
+function abrirFormularioVeiculo() {
+  const formulario = `
+  <h2>Cadastrar Veículo</h2>
+
+  <form id="form_cadastro_veiculo">
+    <label for="placa_veiculo">Placa</label>
+    <input
+      type="text"
+      id="placa_veiculo"
+      placeholder="ABC1D23"
+      maxlength="7"
+      required
+    />
+
+    <label for="tipo_veiculo">Tipo de veículo</label>
+    <select id="tipo_veiculo" required>
+      <option value="">Selecione</option>
+      <option value="CARRO">Carro</option>
+      <option value="MOTO">Moto</option>
+    </select>
+
+    <div class="modal-botoes">
+      <button type="submit">Cadastrar</button>
+      <button type="button" id="cancelar_modal">Cancelar</button>
+    </div>
+  </form>
+`;
+
+  abrirModal(formulario);
+
+  document
+    .getElementById("cancelar_modal")
+    .addEventListener("click", fecharModal);
+
+  document
+    .getElementById("form_cadastro_veiculo")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const placa = document
+        .getElementById("placa_veiculo")
+        .value.trim()
+        .toUpperCase();
+
+      const tipo = document.getElementById("tipo_veiculo").value;
+      const btnCadastrar = e.target.querySelector('button[type="submit"]');
+
+      try {
+        btnCadastrar.disabled = true;
+        btnCadastrar.textContent = "Cadastrando...";
+
+        const resposta = await veiculoApi.registerVeiculo({
+          placa,
+          tipo,
+        });
+
+        alert(resposta.message);
+        fecharModal();
+      } catch (error) {
+        console.error("Erro ao cadastrar veículo:", error);
+        alert(error.message || "Não foi possível cadastrar o veículo.");
+      } finally {
+        if (document.getElementById("form_cadastro_veiculo")) {
+          btnCadastrar.disabled = false;
+          btnCadastrar.textContent = "Cadastrar";
+        }
+      }
+    });
+}
 
 function sairDashboard() {
   localStorage.removeItem("token");
