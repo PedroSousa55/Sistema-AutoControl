@@ -163,6 +163,38 @@ async function carregarResumo() {
   }
 }
 
+// Carrega a lista de veículos cadastrados
+async function carregarVeiculos() {
+  const lista = document.getElementById("lista_veiculos");
+  const mensagemVazia = document.getElementById("veiculos_vazio");
+
+  try {
+    const veiculos = await veiculoApi.listVeiculos();
+
+    lista.innerHTML = "";
+
+    mensagemVazia.style.display = veiculos.length === 0 ? "block" : "none";
+
+    veiculos.forEach((veiculo) => {
+      const linha = document.createElement("tr");
+
+      linha.innerHTML = `
+        <td>${veiculo.placa}</td>
+        <td>${veiculo.tipo}</td>
+        <td>
+          <button type="button">Editar</button>
+          <button type="button">Excluir</button>
+        </td>
+      `;
+
+      lista.appendChild(linha);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar veículos:", error);
+    alert("Não foi possível carregar os veículos.");
+  }
+}
+
 // Mostra somente a tela selecionada
 function telaSelecionada(idTela) {
   TELAS.forEach(({ tela: id }) => {
