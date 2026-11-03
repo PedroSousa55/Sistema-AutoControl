@@ -313,7 +313,7 @@ function abrirFormularioEdicao(veiculo) {
         mostrarNotificacao(
           error.message || "Não foi possível atualizar registro de veículo.",
           "erro",
-          "Erro ao registrar entrada",
+          "Erro ao editar veículo",
         );
       } finally {
         btnSalvar.disabled = false;
@@ -406,17 +406,19 @@ function abrirFormularioVeiculo() {
         });
 
         mostrarNotificacao(
-          resposta.message,
+          resposta.message || "Veículo cadastrado com sucesso!",
           "sucesso",
-          "Veículo registrado com sucesso.",
+          "Cadastro concluído",
         );
         fecharModal();
+
+        await carregarVeiculos();
       } catch (error) {
         console.error("Erro ao cadastrar veículo:", error);
         mostrarNotificacao(
           error.message || "Não foi possível registrar o veículo.",
           "erro",
-          "Erro ao registrar entrada",
+          "Erro ao cadastrar veículo",
         );
       } finally {
         if (document.getElementById("form_cadastro_veiculo")) {
@@ -453,7 +455,11 @@ async function protegePagina() {
     console.error(error);
 
     if (error instanceof TypeError) {
-      alert("Não foi possível conectar ao servidor.");
+      mostrarNotificacao(
+        "Não foi possível conectar ao servidor.",
+        "erro",
+        "Erro de conexão",
+      );
       return null;
     }
 
@@ -478,7 +484,11 @@ async function carregarResumo() {
       resumo.vagas_disponiveis;
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
-    alert("Não foi possível carregar os dados do dashboard.");
+    mostrarNotificacao(
+      "Não foi possível carregar os dados do dashboard.",
+      "erro",
+      "Erro ao carregar dashboard",
+    );
   }
 }
 
@@ -549,7 +559,11 @@ async function carregarEntradas() {
         : `${movimentacoes.length} entrada(s) encontrada(s).`;
   } catch (error) {
     console.error("Erro ao carregar entradas:", error);
-    alert("Não foi possível carregar as entradas.");
+    mostrarNotificacao(
+      "Não foi possível carregar as entradas.",
+      "erro",
+      "Erro ao carregar entradas",
+    );
   }
 }
 
@@ -673,7 +687,11 @@ function abrirFormularioEdicaoMovimentacao(movimentacao) {
           dados,
         );
 
-        alert(resposta.message);
+        mostrarNotificacao(
+          resposta.message || "Movimentação atualizada com sucesso!",
+          "sucesso",
+          "Movimentação atualizada",
+        );
 
         fecharModal();
 
@@ -684,7 +702,11 @@ function abrirFormularioEdicaoMovimentacao(movimentacao) {
         ]);
       } catch (error) {
         console.error("Erro ao editar movimentação:", error);
-        alert(error.message || "Não foi possível editar a movimentação.");
+        mostrarNotificacao(
+          error.message || "Não foi possível editar a movimentação.",
+          "erro",
+          "Erro ao editar movimentação",
+        );
       } finally {
         btnSalvar.disabled = false;
         btnSalvar.textContent = "Salvar alterações";
@@ -694,47 +716,22 @@ function abrirFormularioEdicaoMovimentacao(movimentacao) {
 
 // Abre a confirmação de exclusão
 function abrirConfirmacaoExclusaoMovimentacao(movimentacao) {
-  abrirModal(`
-    <h2>Excluir movimentação</h2>
+  confirmarAcao({
+    titulo: "Excluir movimentação",
+    mensagem: `Deseja realmente excluir a movimentação do veículo ${movimentacao.placa}? Essa ação não poderá ser desfeita.`,
+    textoConfirmar: "Excluir",
 
-    <p>
-      Deseja realmente excluir a movimentação do veículo
-      <strong>${movimentacao.placa}</strong>?
-    </p>
-
-    <p>Essa ação não poderá ser desfeita. O veículo continuará cadastrado.</p>
-
-    <div class="modal-botoes">
-      <button type="button" id="cancelar_exclusao_movimentacao">
-        Cancelar
-      </button>
-
-      <button type="button" id="confirmar_exclusao_movimentacao">
-        Excluir
-      </button>
-    </div>
-  `);
-
-  document
-    .getElementById("cancelar_exclusao_movimentacao")
-    .addEventListener("click", fecharModal);
-
-  document
-    .getElementById("confirmar_exclusao_movimentacao")
-    .addEventListener("click", async (e) => {
-      const btnExcluir = e.currentTarget;
-
+    aoConfirmar: async () => {
       try {
-        btnExcluir.disabled = true;
-        btnExcluir.textContent = "Excluindo...";
-
         const resposta = await movimentacaoApi.deleteMovimentacao(
           movimentacao.id,
         );
 
-        alert(resposta.message);
-
-        fecharModal();
+        mostrarNotificacao(
+          resposta.message,
+          "sucesso",
+          "Movimentação excluída",
+        );
 
         await Promise.all([
           carregarEntradas(),
@@ -742,13 +739,16 @@ function abrirConfirmacaoExclusaoMovimentacao(movimentacao) {
           carregarResumo(),
         ]);
       } catch (error) {
-        console.error("Erro ao excluir movimentação:", error);
-        alert(error.message || "Não foi possível excluir a movimentação.");
-      } finally {
-        btnExcluir.disabled = false;
-        btnExcluir.textContent = "Excluir";
+        mostrarNotificacao(
+          error.message || "Não foi possível excluir a movimentação.",
+          "erro",
+          "Erro ao excluir movimentação",
+        );
+
+        throw error;
       }
-    });
+    },
+  });
 }
 
 // Cria os botões de ação conforme as permissões
@@ -845,7 +845,11 @@ async function carregarSaidas() {
         : `${saidas.length} saída(s) encontrada(s).`;
   } catch (error) {
     console.error("Erro ao carregar saídas:", error);
-    alert("Não foi possível carregar as saídas.");
+    mostrarNotificacao(
+      "Não foi possível carregar as saídas.",
+      "erro",
+      "Erro ao carregar saídas",
+    );
   }
 }
 
@@ -896,16 +900,26 @@ function abrirFormularioSaida() {
           placa,
         });
 
-        alert(resposta.message);
-
+        mostrarNotificacao(
+          resposta.message || "Saída cadastrada com sucesso!",
+          "sucesso",
+          "Saída registrada",
+        );
         fecharModal();
 
-        await carregarSaidas();
-        await carregarResumo();
+        await Promise.all([
+          carregarSaidas(),
+          carregarEntradas(),
+          carregarResumo(),
+        ]);
       } catch (error) {
         console.error("Erro ao registrar saída:", error);
 
-        alert(error.message || "Não foi possível registrar a saída.");
+        mostrarNotificacao(
+          error.message || "Não foi possível registrar a saída.",
+          "erro",
+          "Erro ao registrar saída.",
+        );
       } finally {
         if (document.getElementById("form_cadastro_saida")) {
           btnRegistrar.disabled = false;
@@ -963,7 +977,11 @@ async function carregarVeiculos() {
     });
   } catch (error) {
     console.error("Erro ao carregar veículos:", error);
-    alert("Não foi possível carregar os veículos.");
+    mostrarNotificacao(
+      error.message || "Não foi possível carregar os veículos.",
+      "erro",
+      "Erro ao carregar veículo.",
+    );
   }
 }
 
