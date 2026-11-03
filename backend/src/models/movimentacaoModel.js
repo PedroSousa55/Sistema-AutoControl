@@ -125,9 +125,56 @@ async function findOutraMovimentacaoAberta(placa, id) {
     throw error;
   }
 }
+// Busca movimentação dentro da transação
+async function findMovimentacaoIdTransacao(conexao, id) {
+  const sql = `
+    SELECT *
+    FROM movimentacoes
+    WHERE id = ?
+    FOR UPDATE;
+  `;
 
-//consulta de editar movimentação
+  const [dados] = await conexao.query(sql, [id]);
+  return dados[0];
+}
+
+// Verifica se o veículo ainda está associado a alguma movimentação
+async function findMovimentacaoPorVeiculo(conexao, veiculo_id) {
+  const sql = `
+    SELECT id
+    FROM movimentacoes
+    WHERE veiculo_id = ?
+    LIMIT 1;
+  `;
+
+  const [dados] = await conexao.query(sql, [veiculo_id]);
+  return dados[0];
+}
+
+// verifica se existe outra movimentação aberta para o veículo
+async function findOutraMovimentacaoAbertaPorVeiculo(conexao, veiculo_id, id) {
+  try {
+    const sql = `
+      SELECT id
+      FROM movimentacoes
+      WHERE veiculo_id = ?
+      AND data_saida IS NULL
+      AND id <> ?
+      LIMIT 1;
+    `;
+
+    const [dados] = await conexao.query(sql, [veiculo_id, id]);
+
+    return dados[0];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// atualiza uma movimentação usando uma conexão da transação
 async function updateMovimentacao(
+  conexao,
   id,
   veiculo_id,
   data_entrada,
@@ -137,16 +184,17 @@ async function updateMovimentacao(
 ) {
   try {
     const sql = `
-    UPDATE movimentacoes
-    SET
-      veiculo_id = ?,
-      data_entrada = ?,
-      data_saida = ?,
-      usuario_saida_id = ?,
-      origem_saida = ?
-    WHERE id = ?;    `;
+      UPDATE movimentacoes
+      SET
+        veiculo_id = ?,
+        data_entrada = ?,
+        data_saida = ?,
+        usuario_saida_id = ?,
+        origem_saida = ?
+      WHERE id = ?;
+    `;
 
-    const [dados] = await conect.query(sql, [
+    const [dados] = await conexao.query(sql, [
       veiculo_id,
       data_entrada,
       data_saida,
@@ -154,6 +202,7 @@ async function updateMovimentacao(
       origem_saida,
       id,
     ]);
+
     return dados;
   } catch (error) {
     console.error(error);
@@ -161,14 +210,16 @@ async function updateMovimentacao(
   }
 }
 
-//consulta sql para apagar a movimentação
-async function deleteMovimentacao(id) {
+// exclui uma movimentação usando uma conexão da transação
+async function deleteMovimentacao(conexao, id) {
   try {
     const sql = `
-    DELETE FROM movimentacoes
-    WHERE id = ?;
+      DELETE FROM movimentacoes
+      WHERE id = ?;
     `;
-    const [dados] = await conect.query(sql, [id]);
+
+    const [dados] = await conexao.query(sql, [id]);
+
     return dados;
   } catch (error) {
     console.error(error);
@@ -182,7 +233,10 @@ export default {
   registerEntrada,
   registerSaida,
   findMovimentacaoId,
+  findMovimentacaoIdTransacao,
   findOutraMovimentacaoAberta,
+  findOutraMovimentacaoAbertaPorVeiculo,
+  findMovimentacaoPorVeiculo,
   deleteMovimentacao,
   updateMovimentacao,
 };

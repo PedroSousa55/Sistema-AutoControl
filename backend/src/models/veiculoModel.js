@@ -41,6 +41,40 @@ async function findVeiculoPlaca(placa) {
   }
 }
 
+// Busca veículo usando a conexão da transação
+async function findVeiculoPlacaTransacao(conexao, placa) {
+  const sql = `
+    SELECT *
+    FROM veiculos
+    WHERE placa = ?;
+  `;
+
+  const [dados] = await conexao.query(sql, [placa]);
+  return dados[0];
+}
+
+// Cadastra veículo usando a conexão da transação
+async function veiculoRegisterTransacao(conexao, placa, tipo) {
+  const sql = `
+    INSERT INTO veiculos (placa, tipo)
+    VALUES (?, ?);
+  `;
+
+  const [dados] = await conexao.query(sql, [placa, tipo]);
+  return dados;
+}
+
+// Exclui veículo usando a conexão da transação
+async function veiculoDeleteTransacao(conexao, id) {
+  const sql = `
+    DELETE FROM veiculos
+    WHERE id = ?;
+  `;
+
+  const [dados] = await conexao.query(sql, [id]);
+  return dados;
+}
+
 // fazer edit veiculo e delete veiculo
 async function veiculoEdit(id) {}
 
@@ -52,4 +86,13 @@ export default {
   findVeiculoPlaca,
   veiculoEdit,
   veiculoDelete,
+  //essas consultas de transição é para garanti que varias operações no banco de dados
+  //sejam concluidas juntas.
+  /* 
+  Se tudo der certo: o MySQL confirma todas as alterações (COMMIT).
+  Se alguma etapa der erro: o MySQL desfaz as alterações realizadas (ROLLBACK).
+  */
+  findVeiculoPlacaTransacao,
+  veiculoRegisterTransacao,
+  veiculoDeleteTransacao,
 };
