@@ -234,6 +234,39 @@ const movimentacaoApi = {
       throw error;
     }
   },
+
+  // Edita uma movimentação
+  async editMovimentacao(id, movimentacao) {
+    try {
+      const response = await fetch(`${API}/movimentacao/edit/${id}`, {
+        method: "POST",
+        headers: httpAuth(),
+        body: JSON.stringify(movimentacao),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  // Exclui uma movimentação
+  async deleteMovimentacao(id) {
+    try {
+      const response = await fetch(`${API}/movimentacao/delete/${id}`, {
+        method: "DELETE",
+        headers: httpAuth(),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 };
 
 export { usuarioApi, dashboardApi, veiculoApi, movimentacaoApi };

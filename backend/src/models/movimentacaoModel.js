@@ -374,7 +374,7 @@ async function deleteMovimentacaoTransacao(conexao, id) {
   return dados;
 }
 
-// Exclui movimentação e remove o veículo se não possuir histórico
+// Exclui movimentação sem apagar o veículo cadastrado
 async function deleteMovimentacao(id) {
   const conexao = await conect.getConnection();
 
@@ -388,21 +388,11 @@ async function deleteMovimentacao(id) {
       return false;
     }
 
+    // Exclui somente a movimentação
     await deleteMovimentacaoTransacao(conexao, id);
 
-    const veiculo = await findMovimentacaoPorVeiculo(
-      conexao,
-      movimentacao.veiculo_id,
-    );
-
-    if (!veiculo) {
-      await veiculoModel.veiculoDeleteTransacao(
-        conexao,
-        movimentacao.veiculo_id,
-      );
-    }
-
     await conexao.commit();
+
     return true;
   } catch (error) {
     await conexao.rollback();
