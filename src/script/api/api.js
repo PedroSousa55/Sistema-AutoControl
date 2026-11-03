@@ -140,6 +140,38 @@ const veiculoApi = {
       throw error;
     }
   },
+  // Edita veículo
+  async editVeiculo(id, veiculo) {
+    try {
+      const response = await fetch(`${API}/veiculos/${id}`, {
+        method: "PUT",
+        headers: httpAuth(),
+        body: JSON.stringify(veiculo),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  // Exclui veículo
+  async deleteVeiculo(id) {
+    try {
+      const response = await fetch(`${API}/veiculos/${id}`, {
+        method: "DELETE",
+        headers: httpAuth(),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 };
 
 const movimentacaoApi = {
@@ -178,6 +210,21 @@ const movimentacaoApi = {
         method: "POST",
         headers: httpAuth(),
         body: JSON.stringify(movimentacao),
+      });
+
+      await verifyResponse(response);
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  async listSaidas() {
+    try {
+      const response = await fetch(`${API}/movimentacao/saidas`, {
+        method: "GET",
+        headers: httpAuth(),
       });
 
       await verifyResponse(response);

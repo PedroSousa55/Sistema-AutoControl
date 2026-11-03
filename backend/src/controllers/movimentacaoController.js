@@ -169,6 +169,20 @@ class MovimentacaoController {
     }
   }
 
+  // Lista todas as saídas
+  static async findSaidas(req, res) {
+    try {
+      const result = await modelMovimentacao.listSaidas();
+      return res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
+
+      return res.status(500).json({
+        message: "Erro ao carregar as saídas.",
+      });
+    }
+  }
+
   // Editar movimentação
   static async editMovimentacao(req, res) {
     try {

@@ -2,10 +2,49 @@ import conect from "../config/database.js";
 import veiculoModel from "./veiculoModel.js";
 
 // Lista todas as movimentações
+// Lista todas as movimentações com dados do veículo e responsável
 async function listMovimentacao() {
   try {
     const sql = `
-      SELECT * FROM movimentacoes;
+      SELECT
+        m.id,
+        m.data_entrada,
+        v.placa,
+        v.tipo,
+        u.nome AS responsavel
+      FROM movimentacoes AS m
+      INNER JOIN veiculos AS v
+        ON m.veiculo_id = v.id
+      LEFT JOIN usuario AS u
+        ON m.usuario_entrada_id = u.id
+      ORDER BY m.data_entrada DESC;
+    `;
+
+    const [dados] = await conect.query(sql);
+    return dados;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Lista todas as saídas com dados do veículo e responsável
+async function listSaidas() {
+  try {
+    const sql = `
+      SELECT
+        m.id,
+        m.data_saida,
+        v.placa,
+        v.tipo,
+        u.nome AS responsavel
+      FROM movimentacoes AS m
+      INNER JOIN veiculos AS v
+        ON m.veiculo_id = v.id
+      LEFT JOIN usuario AS u
+        ON m.usuario_saida_id = u.id
+      WHERE m.data_saida IS NOT NULL
+      ORDER BY m.data_saida DESC;
     `;
 
     const [dados] = await conect.query(sql);
@@ -386,4 +425,5 @@ export default {
   updateMovimentacao,
   editMovimentacaoTransacao,
   deleteMovimentacao,
+  listSaidas,
 };

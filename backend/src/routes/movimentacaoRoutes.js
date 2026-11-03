@@ -19,6 +19,8 @@ router.post(
   MovimentacaoController.registerSaida,
 );
 
+router.get("/saidas", authMiddleware, MovimentacaoController.findSaidas);
+
 router.get(
   "/placa/:placa",
   authMiddleware,
