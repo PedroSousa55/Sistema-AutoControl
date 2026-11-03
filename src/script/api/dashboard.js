@@ -809,7 +809,11 @@ async function carregarVeiculos() {
       >
         Editar
       </button>
-
+    </div>
+  </td>
+    
+  <td>
+    <div class="acoes-veiculo">
       <button
         type="button"
         class="botao-excluir"
