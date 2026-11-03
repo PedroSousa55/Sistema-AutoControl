@@ -75,9 +75,112 @@ class VeiculosController {
     }
   }
 
-  static async veiculoEdit(req, res) {}
+  static async veiculoEdit(req, res) {
+    try {
+      const id = Number(req.params.id);
+      const { placa, tipo } = req.body;
 
-  static async veiculoDelete(req, res) {}
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          message: "ID do veículo inválido.",
+        });
+      }
+
+      if (!placa || !tipo) {
+        return res.status(400).json({
+          message: "Placa e tipo são obrigatórios.",
+        });
+      }
+
+      const placaFormatada = placa.trim().toUpperCase();
+
+      if (!/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)) {
+        return res.status(400).json({
+          message: "Informe uma placa válida.",
+        });
+      }
+
+      if (tipo !== "CARRO" && tipo !== "MOTO") {
+        return res.status(400).json({
+          message: "Tipo de veículo inválido.",
+        });
+      }
+
+      const veiculo = await modelVeiculos.findVeiculoId(id);
+
+      if (!veiculo) {
+        return res.status(404).json({
+          message: "Veículo não encontrado.",
+        });
+      }
+
+      const placaExistente =
+        await modelVeiculos.findVeiculoPlaca(placaFormatada);
+
+      if (placaExistente && placaExistente.id !== id) {
+        return res.status(409).json({
+          message: "Essa placa já está cadastrada.",
+        });
+      }
+
+      await modelVeiculos.veiculoEdit(id, placaFormatada, tipo);
+
+      return res.status(200).json({
+        message: "Veículo atualizado com sucesso.",
+      });
+    } catch (error) {
+      console.error(error);
+
+      return res.status(500).json({
+        message: "Erro ao atualizar veículo.",
+      });
+    }
+  }
+
+  static async veiculoDelete(req, res) {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          message: "ID do veículo inválido.",
+        });
+      }
+
+      const veiculo = await modelVeiculos.findVeiculoId(id);
+
+      if (!veiculo) {
+        return res.status(404).json({
+          message: "Veículo não encontrado.",
+        });
+      }
+
+      const resultado = await modelVeiculos.veiculoDelete(id);
+
+      if (resultado.bloqueado) {
+        return res.status(409).json({
+          message:
+            "Não é possível excluir: existem movimentações vinculadas a este veículo.",
+        });
+      }
+
+      if (!resultado.excluido) {
+        return res.status(400).json({
+          message: "Não foi possível excluir o veículo.",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Veículo excluído com sucesso.",
+      });
+    } catch (error) {
+      console.error(error);
+
+      return res.status(500).json({
+        message: "Erro ao excluir veículo.",
+      });
+    }
+  }
 }
 
 export default VeiculosController;

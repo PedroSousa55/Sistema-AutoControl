@@ -37,6 +37,77 @@ function fecharModal() {
   modalConteudo.innerHTML = "";
 }
 
+function abrirFormularioEdicao(veiculo) {
+  abrirModal(`
+    <h2>Editar veículo</h2>
+
+    <form id="form-editar-veiculo">
+      <label for="placa-editar">Placa</label>
+      <input
+        type="text"
+        id="placa-editar"
+        value="${veiculo.placa}"
+        maxlength="7"
+        required
+      >
+
+      <label for="tipo-editar">Tipo</label>
+      <select id="tipo-editar" required>
+        <option value="CARRO" ${veiculo.tipo === "CARRO" ? "selected" : ""}>
+          Carro
+        </option>
+
+        <option value="MOTO" ${veiculo.tipo === "MOTO" ? "selected" : ""}>
+          Moto
+        </option>
+      </select>
+
+      <div class="modal-botoes">
+        <button type="button" id="cancelar-edicao">Cancelar</button>
+        <button type="submit">Salvar alterações</button>
+      </div>
+    </form>
+  `);
+
+  document
+    .getElementById("cancelar-edicao")
+    .addEventListener("click", fecharModal);
+
+  document
+    .getElementById("form-editar-veiculo")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("A edição será implementada na próxima etapa.");
+    });
+}
+
+function abrirConfirmacaoExclusao(veiculo) {
+  abrirModal(`
+    <h2>Excluir veículo</h2>
+
+    <p>
+      Tem certeza de que deseja excluir o veículo
+      <strong>${veiculo.placa}</strong>?
+    </p>
+
+    <div class="modal-botoes">
+      <button type="button" id="cancelar-exclusao">Cancelar</button>
+      <button type="button" id="confirmar-exclusao">Confirmar</button>
+    </div>
+  `);
+
+  document
+    .getElementById("cancelar-exclusao")
+    .addEventListener("click", fecharModal);
+
+  document
+    .getElementById("confirmar-exclusao")
+    .addEventListener("click", () => {
+      alert("A exclusão será implementada na próxima etapa.");
+      fecharModal();
+    });
+}
+
 // Abre o formulário de cadastro de veículo
 function abrirFormularioVeiculo() {
   const formulario = `
@@ -179,13 +250,29 @@ async function carregarVeiculos() {
       const linha = document.createElement("tr");
 
       linha.innerHTML = `
-        <td>${veiculo.placa}</td>
-        <td>${veiculo.tipo}</td>
-        <td>
-          <button type="button">Editar</button>
-          <button type="button">Excluir</button>
-        </td>
-      `;
+  <td class="placa-veiculo">${veiculo.placa}</td>
+  <td>${veiculo.tipo}</td>
+  <td>
+    <div class="acoes-veiculo">
+      <button
+        type="button"
+        class="botao-editar"
+        data-id="${veiculo.id}"
+      >
+        Editar
+      </button>
+
+      <button
+        type="button"
+        class="botao-excluir"
+        data-id="${veiculo.id}"
+        data-placa="${veiculo.placa}"
+      >
+        Excluir
+      </button>
+    </div>
+  </td>
+`;
 
       lista.appendChild(linha);
     });
@@ -194,6 +281,29 @@ async function carregarVeiculos() {
     alert("Não foi possível carregar os veículos.");
   }
 }
+
+document.getElementById("lista_veiculos").addEventListener("click", (e) => {
+  const botaoEditar = e.target.closest(".botao-editar");
+  const botaoExcluir = e.target.closest(".botao-excluir");
+
+  if (!botaoEditar && !botaoExcluir) return;
+
+  const linha = e.target.closest("tr");
+
+  const veiculo = {
+    id: (botaoEditar || botaoExcluir).dataset.id,
+    placa: linha.children[0].textContent.trim(),
+    tipo: linha.children[1].textContent.trim(),
+  };
+
+  if (botaoEditar) {
+    abrirFormularioEdicao(veiculo);
+  }
+
+  if (botaoExcluir) {
+    abrirConfirmacaoExclusao(veiculo);
+  }
+});
 
 // Mostra somente a tela selecionada
 function telaSelecionada(idTela) {
@@ -248,6 +358,10 @@ function configPermissao(tipo) {
     botaoMenu.addEventListener("click", (e) => {
       e.preventDefault();
       telaSelecionada(idTela);
+
+      if (idTela === "veiculo_main") {
+        carregarVeiculos();
+      }
     });
   });
 

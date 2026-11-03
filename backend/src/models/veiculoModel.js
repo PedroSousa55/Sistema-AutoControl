@@ -41,6 +41,24 @@ async function findVeiculoPlaca(placa) {
   }
 }
 
+// Busca veículo pelo ID
+async function findVeiculoId(id) {
+  try {
+    const sql = `
+      SELECT *
+      FROM veiculos
+      WHERE id = ?;
+    `;
+
+    const [dados] = await conect.query(sql, [id]);
+
+    return dados[0];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 // Busca veículo usando a conexão da transação
 async function findVeiculoPlacaTransacao(conexao, placa) {
   const sql = `
@@ -75,23 +93,66 @@ async function veiculoDeleteTransacao(conexao, id) {
   return dados;
 }
 
-// fazer edit veiculo e delete veiculo
-async function veiculoEdit(id) {}
+// Edita veículo
+async function veiculoEdit(id, placa, tipo) {
+  try {
+    const sql = `
+      UPDATE veiculos
+      SET placa = ?, tipo = ?
+      WHERE id = ?;
+    `;
 
-async function veiculoDelete(id) {}
+    const [dados] = await conect.query(sql, [placa, tipo, id]);
+
+    return dados;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Exclui veículo
+async function veiculoDelete(id) {
+  try {
+    // Verifica se existem movimentações vinculadas
+    const sqlVerificar = `
+      SELECT COUNT(*) AS total
+      FROM movimentacoes
+      WHERE veiculo_id = ?;
+    `;
+
+    const [resultado] = await conect.query(sqlVerificar, [id]);
+
+    if (resultado[0].total > 0) {
+      return {
+        bloqueado: true,
+      };
+    }
+
+    const sqlExcluir = `
+      DELETE FROM veiculos
+      WHERE id = ?;
+    `;
+
+    const [dados] = await conect.query(sqlExcluir, [id]);
+    
+    return {
+      bloqueado: false,
+      excluido: dados.affectedRows > 0,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
 export default {
   listVeiculos,
   veiculoRegister,
   findVeiculoPlaca,
+  findVeiculoId,
   veiculoEdit,
   veiculoDelete,
-  //essas consultas de transição é para garanti que varias operações no banco de dados
-  //sejam concluidas juntas.
-  /* 
-  Se tudo der certo: o MySQL confirma todas as alterações (COMMIT).
-  Se alguma etapa der erro: o MySQL desfaz as alterações realizadas (ROLLBACK).
-  */
   findVeiculoPlacaTransacao,
   veiculoRegisterTransacao,
   veiculoDeleteTransacao,
