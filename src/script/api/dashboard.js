@@ -7,6 +7,8 @@ import {
 
 const btnSair = document.getElementById("sair_button");
 
+let usuarioLogado = null;
+
 const btnAbrirCadastroVeiculo = document.getElementById(
   "abrir_cadastro_veiculo",
 );
@@ -688,6 +690,8 @@ function configPermissao(tipo) {
 const user = await protegePagina();
 
 if (user) {
+  usuarioLogado = user;
+
   configPermissao(user.tipo);
   carregarResumo();
 }

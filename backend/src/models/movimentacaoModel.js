@@ -9,6 +9,10 @@ async function listMovimentacao() {
       SELECT
         m.id,
         m.data_entrada,
+        m.data_saida,
+        m.origem_entrada,
+        m.origem_saida,
+        m.usuario_entrada_id,
         v.placa,
         v.tipo,
         u.nome AS responsavel
@@ -17,8 +21,7 @@ async function listMovimentacao() {
         ON m.veiculo_id = v.id
       LEFT JOIN usuario AS u
         ON m.usuario_entrada_id = u.id
-      ORDER BY m.data_entrada DESC;
-    `;
+      ORDER BY m.data_entrada DESC;`;
 
     const [dados] = await conect.query(sql);
     return dados;
@@ -34,7 +37,11 @@ async function listSaidas() {
     const sql = `
       SELECT
         m.id,
+        m.data_entrada,
         m.data_saida,
+        m.origem_entrada,
+        m.origem_saida,
+        m.usuario_entrada_id,
         v.placa,
         v.tipo,
         u.nome AS responsavel
@@ -44,8 +51,7 @@ async function listSaidas() {
       LEFT JOIN usuario AS u
         ON m.usuario_saida_id = u.id
       WHERE m.data_saida IS NOT NULL
-      ORDER BY m.data_saida DESC;
-    `;
+      ORDER BY m.data_saida DESC;`;
 
     const [dados] = await conect.query(sql);
     return dados;
