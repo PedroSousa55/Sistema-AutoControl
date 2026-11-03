@@ -393,7 +393,6 @@ async function carregarEntradas() {
 
     lista.innerHTML = "";
 
-    // Exibe somente as movimentações de entrada
     movimentacoes.forEach((movimentacao) => {
       const linha = document.createElement("tr");
 
@@ -413,9 +412,12 @@ async function carregarEntradas() {
         <td>${movimentacao.placa}</td>
         <td>${movimentacao.tipo}</td>
         <td>${movimentacao.responsavel || "Não informado"}</td>
-        <td>—</td>
       `;
 
+      const colunaAcoes = document.createElement("td");
+      colunaAcoes.appendChild(criarAcoesMovimentacao(movimentacao));
+
+      linha.appendChild(colunaAcoes);
       lista.appendChild(linha);
     });
 
@@ -429,6 +431,240 @@ async function carregarEntradas() {
     console.error("Erro ao carregar entradas:", error);
     alert("Não foi possível carregar as entradas.");
   }
+}
+
+// Converte a data do MySQL para o formato aceito pelo input datetime-local
+function formatarDataInput(data) {
+  if (!data) return "";
+
+  return data.replace(" ", "T").slice(0, 16);
+}
+
+// Verifica se o usuário pode editar a movimentação
+function podeEditarMovimentacao(movimentacao) {
+  if (usuarioLogado?.tipo === "ADM") {
+    return true;
+  }
+
+  return (
+    usuarioLogado?.tipo === "VIGIA" &&
+    movimentacao.origem_entrada === "MANUAL" &&
+    Number(movimentacao.usuario_entrada_id) === Number(usuarioLogado.id)
+  );
+}
+
+// Abre o formulário de edição da movimentação
+function abrirFormularioEdicaoMovimentacao(movimentacao) {
+  const adm = usuarioLogado?.tipo === "ADM";
+
+  const camposData = adm
+    ? `
+      <label for="editar_data_entrada">Data e hora da entrada</label>
+      <input
+        type="datetime-local"
+        id="editar_data_entrada"
+        value="${formatarDataInput(movimentacao.data_entrada)}"
+        required
+      >
+
+      <label for="editar_data_saida">Data e hora da saída</label>
+      <input
+        type="datetime-local"
+        id="editar_data_saida"
+        value="${formatarDataInput(movimentacao.data_saida)}"
+      >
+
+      <small>Deixe a saída vazia para reabrir a movimentação.</small>
+    `
+    : "";
+
+  abrirModal(`
+    <h2>Editar movimentação</h2>
+
+    <form id="form_editar_movimentacao">
+      <label for="editar_placa">Placa</label>
+      <input
+        type="text"
+        id="editar_placa"
+        value="${movimentacao.placa}"
+        maxlength="7"
+        required
+      >
+
+      <label for="editar_tipo">Tipo de veículo</label>
+      <select id="editar_tipo" required>
+        <option value="CARRO" ${movimentacao.tipo === "CARRO" ? "selected" : ""}>
+          Carro
+        </option>
+        <option value="MOTO" ${movimentacao.tipo === "MOTO" ? "selected" : ""}>
+          Moto
+        </option>
+      </select>
+
+      ${camposData}
+
+      <div class="modal-botoes">
+        <button type="button" id="cancelar_edicao_movimentacao">
+          Cancelar
+        </button>
+
+        <button type="submit">Salvar alterações</button>
+      </div>
+    </form>
+  `);
+
+  document
+    .getElementById("cancelar_edicao_movimentacao")
+    .addEventListener("click", fecharModal);
+
+  document
+    .getElementById("form_editar_movimentacao")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const placa = document
+        .getElementById("editar_placa")
+        .value.trim()
+        .toUpperCase();
+
+      const tipo = document.getElementById("editar_tipo").value;
+
+      const dados = { placa, tipo };
+
+      // Somente ADM envia datas para o backend
+      if (adm) {
+        dados.data_entrada = document.getElementById(
+          "editar_data_entrada",
+        ).value;
+
+        const dataSaida = document.getElementById("editar_data_saida").value;
+
+        dados.data_saida = dataSaida || null;
+      }
+
+      const btnSalvar = e.target.querySelector('button[type="submit"]');
+
+      try {
+        btnSalvar.disabled = true;
+        btnSalvar.textContent = "Salvando...";
+
+        const resposta = await movimentacaoApi.editMovimentacao(
+          movimentacao.id,
+          dados,
+        );
+
+        alert(resposta.message);
+
+        fecharModal();
+
+        await Promise.all([
+          carregarEntradas(),
+          carregarSaidas(),
+          carregarResumo(),
+        ]);
+      } catch (error) {
+        console.error("Erro ao editar movimentação:", error);
+        alert(error.message || "Não foi possível editar a movimentação.");
+      } finally {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = "Salvar alterações";
+      }
+    });
+}
+
+// Abre a confirmação de exclusão
+function abrirConfirmacaoExclusaoMovimentacao(movimentacao) {
+  abrirModal(`
+    <h2>Excluir movimentação</h2>
+
+    <p>
+      Deseja realmente excluir a movimentação do veículo
+      <strong>${movimentacao.placa}</strong>?
+    </p>
+
+    <p>Essa ação não poderá ser desfeita. O veículo continuará cadastrado.</p>
+
+    <div class="modal-botoes">
+      <button type="button" id="cancelar_exclusao_movimentacao">
+        Cancelar
+      </button>
+
+      <button type="button" id="confirmar_exclusao_movimentacao">
+        Excluir
+      </button>
+    </div>
+  `);
+
+  document
+    .getElementById("cancelar_exclusao_movimentacao")
+    .addEventListener("click", fecharModal);
+
+  document
+    .getElementById("confirmar_exclusao_movimentacao")
+    .addEventListener("click", async (e) => {
+      const btnExcluir = e.currentTarget;
+
+      try {
+        btnExcluir.disabled = true;
+        btnExcluir.textContent = "Excluindo...";
+
+        const resposta = await movimentacaoApi.deleteMovimentacao(
+          movimentacao.id,
+        );
+
+        alert(resposta.message);
+
+        fecharModal();
+
+        await Promise.all([
+          carregarEntradas(),
+          carregarSaidas(),
+          carregarResumo(),
+        ]);
+      } catch (error) {
+        console.error("Erro ao excluir movimentação:", error);
+        alert(error.message || "Não foi possível excluir a movimentação.");
+      } finally {
+        btnExcluir.disabled = false;
+        btnExcluir.textContent = "Excluir";
+      }
+    });
+}
+
+// Cria os botões de ação conforme as permissões
+function criarAcoesMovimentacao(movimentacao) {
+  const acoes = document.createElement("div");
+  acoes.className = "acoes-veiculo";
+
+  if (podeEditarMovimentacao(movimentacao)) {
+    const btnEditar = document.createElement("button");
+
+    btnEditar.type = "button";
+    btnEditar.className = "botao-editar";
+    btnEditar.textContent = "Editar";
+
+    btnEditar.addEventListener("click", () => {
+      abrirFormularioEdicaoMovimentacao(movimentacao);
+    });
+
+    acoes.appendChild(btnEditar);
+  }
+
+  if (usuarioLogado?.tipo === "ADM") {
+    const btnExcluir = document.createElement("button");
+
+    btnExcluir.type = "button";
+    btnExcluir.className = "botao-excluir";
+    btnExcluir.textContent = "Excluir";
+
+    btnExcluir.addEventListener("click", () => {
+      abrirConfirmacaoExclusaoMovimentacao(movimentacao);
+    });
+
+    acoes.appendChild(btnExcluir);
+  }
+
+  return acoes;
 }
 
 // Carrega a lista de saídas
@@ -459,9 +695,12 @@ async function carregarSaidas() {
         <td>${saida.placa}</td>
         <td>${saida.tipo}</td>
         <td>${saida.responsavel || "Não informado"}</td>
-        <td>—</td>
       `;
 
+      const colunaAcoes = document.createElement("td");
+      colunaAcoes.appendChild(criarAcoesMovimentacao(saida));
+
+      linha.appendChild(colunaAcoes);
       lista.appendChild(linha);
     });
 
