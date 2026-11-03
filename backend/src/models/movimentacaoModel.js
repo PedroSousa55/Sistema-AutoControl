@@ -211,6 +211,119 @@ async function updateMovimentacao(
   }
 }
 
+// Edita movimentação usando transação
+async function editMovimentacaoTransacao(
+  id,
+  placa,
+  tipo,
+  dataEntrada,
+  dataSaida,
+  usuarioId,
+) {
+  const conexao = await conect.getConnection();
+
+  try {
+    await conexao.beginTransaction();
+
+    // Busca e bloqueia a movimentação
+    const movimentacao = await findMovimentacaoIdTransacao(conexao, id);
+
+    if (!movimentacao) {
+      await conexao.rollback();
+      return { status: 404 };
+    }
+
+    // Busca o veículo pela placa informada
+    let veiculo = await veiculoModel.findVeiculoPlacaTransacao(conexao, placa);
+
+    // Se já existe, verifica se o tipo é compatível
+    if (veiculo && veiculo.tipo !== tipo) {
+      await conexao.rollback();
+      return {
+        status: 409,
+        message: "O tipo informado é diferente do veículo cadastrado.",
+      };
+    }
+
+    // Se não existe, cadastra o novo veículo
+    if (!veiculo) {
+      const novoVeiculo = await veiculoModel.veiculoRegisterTransacao(
+        conexao,
+        placa,
+        tipo,
+      );
+
+      veiculo = {
+        id: novoVeiculo.insertId,
+      };
+    }
+
+    // Verifica se existe outra entrada em aberto para esse veículo
+    if (dataSaida === null) {
+      const outraMovimentacao = await findOutraMovimentacaoAbertaPorVeiculo(
+        conexao,
+        veiculo.id,
+        id,
+      );
+
+      if (outraMovimentacao) {
+        await conexao.rollback();
+        return {
+          status: 409,
+          message: "Esse veículo já possui uma movimentação em aberto.",
+        };
+      }
+    }
+
+    // Mantém os dados da saída quando ela já existia
+    let usuarioSaidaId = movimentacao.usuario_saida_id;
+    let origemSaida = movimentacao.origem_saida;
+
+    if (dataSaida === null) {
+      usuarioSaidaId = null;
+      origemSaida = null;
+    } else if (movimentacao.data_saida === null) {
+      usuarioSaidaId = usuarioId;
+      origemSaida = "MANUAL";
+    }
+
+    // Atualiza a movimentação
+    await updateMovimentacao(
+      conexao,
+      id,
+      veiculo.id,
+      dataEntrada,
+      dataSaida,
+      usuarioSaidaId,
+      origemSaida,
+    );
+
+    // Remove o veículo antigo somente se não houver histórico associado
+    if (movimentacao.veiculo_id !== veiculo.id) {
+      const veiculoAntigo = await findMovimentacaoPorVeiculo(
+        conexao,
+        movimentacao.veiculo_id,
+      );
+
+      if (!veiculoAntigo) {
+        await veiculoModel.veiculoDeleteTransacao(
+          conexao,
+          movimentacao.veiculo_id,
+        );
+      }
+    }
+
+    await conexao.commit();
+
+    return { status: 200 };
+  } catch (error) {
+    await conexao.rollback();
+    throw error;
+  } finally {
+    conexao.release();
+  }
+}
+
 // Exclui movimentação usando a conexão da transação
 async function deleteMovimentacaoTransacao(conexao, id) {
   const sql = `
@@ -271,5 +384,6 @@ export default {
   findOutraMovimentacaoAbertaPorVeiculo,
   findMovimentacaoPorVeiculo,
   updateMovimentacao,
+  editMovimentacaoTransacao,
   deleteMovimentacao,
 };

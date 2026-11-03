@@ -168,173 +168,162 @@ class MovimentacaoController {
       });
     }
   }
-  //falta o editar a movimentação
+
+  // Editar movimentação
   static async editMovimentacao(req, res) {
     try {
-      //pedando o id da url e verificando se ele é valido
       const { id } = req.params;
 
       if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
-        let message = "ID da movimentação inválido.";
-        return res.status(400).json({ message });
-      }
-
-      const { placa, tipo, data_entrada, data_saida } = req.body;
-      //fazer validação quando data_saida nao for enviada
-      if (!placa || !tipo || !data_entrada) {
-        let message =
-          "Os campos placa, tipo, data de entrada são obrigatórios.";
-        return res.status(400).json({ message });
-      }
-
-      //tou buscando a movimentação pelo id para verificar se ela existe
-      const movimentacao = await modelMovimentacao.findMovimentacaoId(id);
-
-      if (!movimentacao) {
-        let message = "Movimentação não encontrada.";
-        return res.status(404).json({ message });
-      }
-      //verificando se usuario pode editar
-      // a regra é que usuario so pode edita movimentaçoes manual
-      if (
-        movimentacao.origem_entrada === "AUTOMATICA" ||
-        movimentacao.origem_saida === "AUTOMATICA"
-      ) {
-        let message =
-          "Movimentações automáticas não podem ser editadas manualmente.";
-        return res.status(400).json({ message });
-      }
-
-      //aqui nos vamos fazer uma validação para validar se usuario pode editar a movimentaçao
-      if (
-        req.user.tipo !== "ADM" &&
-        movimentacao.usuario_entrada_id !== req.user.id &&
-        movimentacao.usuario_saida_id !== req.user.id
-      ) {
-        let message = "Você não tem permissão para editar essa movimentação.";
-        return res.status(403).json({ message });
-      }
-
-      //validando o tipo do veiculo
-      if (tipo !== "CARRO" && tipo !== "MOTO") {
-        let message = "Informe um tipo de veículo válido.";
-        return res.status(400).json({ message });
-      }
-
-      //esse bloco faz a validação das datas
-      const dataEntrada = new Date(data_entrada);
-
-      //verificação de data entrada se ela é valida ou não
-      if (isNaN(dataEntrada.getTime())) {
         return res.status(400).json({
-          message: "Data Entrada Invalida.",
+          message: "ID da movimentação inválido.",
         });
       }
 
-      //verificação de uma data futura se a data entrada nao é uma data futura
+      const { placa, tipo, data_entrada, data_saida } = req.body;
+
+      // Valida placa
+      const placaFormatada = placa?.trim().toUpperCase();
+
+      if (
+        !placaFormatada ||
+        !/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)
+      ) {
+        return res.status(400).json({
+          message: "Informe uma placa válida.",
+        });
+      }
+
+      // Valida tipo
+      if (tipo !== "CARRO" && tipo !== "MOTO") {
+        return res.status(400).json({
+          message: "Informe um tipo de veículo válido.",
+        });
+      }
+
+      // Busca a movimentação
+      const movimentacao = await modelMovimentacao.findMovimentacaoId(id);
+
+      if (!movimentacao) {
+        return res.status(404).json({
+          message: "Movimentação não encontrada.",
+        });
+      }
+
+      // VIGIA só pode editar entrada manual registrada por ele
+      if (req.user.tipo !== "ADM") {
+        if (
+          movimentacao.origem_entrada !== "MANUAL" ||
+          Number(movimentacao.usuario_entrada_id) !== Number(req.user.id)
+        ) {
+          return res.status(403).json({
+            message: "Você não tem permissão para editar essa movimentação.",
+          });
+        }
+      }
+
+      // Define as datas atuais
+      let dataEntrada = new Date(movimentacao.data_entrada);
+      let dataSaida = movimentacao.data_saida
+        ? new Date(movimentacao.data_saida)
+        : null;
+
+      // Somente ADM pode alterar datas
+      if (req.user.tipo === "ADM") {
+        if (!data_entrada) {
+          return res.status(400).json({
+            message: "A data de entrada é obrigatória.",
+          });
+        }
+
+        dataEntrada = new Date(data_entrada);
+
+        if (Object.hasOwn(req.body, "data_saida")) {
+          if (data_saida === null || data_saida === "") {
+            dataSaida = null;
+          } else {
+            dataSaida = new Date(data_saida);
+          }
+        }
+      } else {
+        // VIGIA não pode alterar datas
+        if (
+          Object.hasOwn(req.body, "data_entrada") ||
+          Object.hasOwn(req.body, "data_saida")
+        ) {
+          return res.status(403).json({
+            message: "Vigia não tem permissão para alterar datas.",
+          });
+        }
+      }
+
+      // Valida data de entrada
+      if (isNaN(dataEntrada.getTime())) {
+        return res.status(400).json({
+          message: "Data de entrada inválida.",
+        });
+      }
+
       if (dataEntrada > new Date()) {
         return res.status(400).json({
           message: "A data de entrada não pode ser futura.",
         });
       }
 
-      //verificação de data saida
-      const temDataSaida = Object.hasOwn(req.body, "data_saida");
-
-      let dataSaida = movimentacao.data_saida
-        ? new Date(movimentacao.data_saida)
-        : null;
-
-      if (temDataSaida) {
-        if (data_saida === null || data_saida === "") {
-          dataSaida = null;
-        } else {
-          dataSaida = new Date(data_saida);
-        }
-      }
-
+      // Valida data de saída
       if (dataSaida !== null) {
         if (isNaN(dataSaida.getTime())) {
           return res.status(400).json({
-            message: "Data saída inválida.",
+            message: "Data de saída inválida.",
           });
         }
 
         if (dataSaida > new Date()) {
           return res.status(400).json({
-            message: "A data saída não pode ser futura..",
+            message: "A data de saída não pode ser futura.",
           });
         }
 
         if (dataSaida < dataEntrada) {
           return res.status(400).json({
-            message: "A data saída não pode ser inferior a data de entrada.",
+            message: "A data de saída não pode ser inferior à data de entrada.",
           });
         }
       }
 
-      //buscando veiculo pela placa pra verificar se ele existe
-      const veiculo = await veiculoModel.findVeiculoPlaca(placa);
-      let veiculo_id;
-
-      //verificando se veiculo ja existe
-      if (veiculo) {
-        //verificando o tipo do veiculo cadastrado
-        if (veiculo.tipo !== tipo) {
-          let message = "O tipo informado é diferente do veículo cadastrado.";
-          return res.status(409).json({ message });
-        }
-
-        veiculo_id = veiculo.id;
-      } else {
-        //se ele nao existi vamos cadastrar ele na nossa tabela veiculo
-        const novoVeiculo = await veiculoModel.veiculoRegister(placa, tipo);
-
-        veiculo_id = novoVeiculo.insertId;
-      }
-
-      if (dataSaida === null) {
-        const outraMovimentacao =
-          await modelMovimentacao.findOutraMovimentacaoAberta(placa, id);
-
-        if (outraMovimentacao) {
-          let message = "Esse veículo ja possui uma movimentação em aberto.";
-          return res.status(409).json({ message });
-        }
-      }
-
-      let usuarioSaidaId = movimentacao.usuario_saida_id;
-      let origemSaida = movimentacao.origem_saida;
-
-      if (dataSaida === null) {
-        usuarioSaidaId = null;
-        origemSaida = null;
-      } else if (movimentacao.data_saida === null) {
-        usuarioSaidaId = req.user.id;
-        origemSaida = "MANUAL";
-      }
-
-      const result = await modelMovimentacao.updateMovimentacao(
+      // Executa a edição dentro de uma transação
+      const resultado = await modelMovimentacao.editMovimentacaoTransacao(
         id,
-        veiculo_id,
+        placaFormatada,
+        tipo,
         dataEntrada,
         dataSaida,
-        usuarioSaidaId,
-        origemSaida,
+        req.user.id,
       );
 
+      if (resultado.status === 404) {
+        return res.status(404).json({
+          message: "Movimentação não encontrada.",
+        });
+      }
+
+      if (resultado.status === 409) {
+        return res.status(409).json({
+          message: resultado.message,
+        });
+      }
+
       return res.status(200).json({
-        message: "Movimentacão atualizada com sucesso.",
+        message: "Movimentação atualizada com sucesso.",
       });
     } catch (error) {
       console.error(error);
+
       return res.status(500).json({
-        message: "Erro de servidor!",
+        message: "Erro interno do servidor.",
       });
     }
   }
-
-  //deletar movimentação
 
   // Deletar movimentação
   static async deleteMovimentacao(req, res) {
