@@ -22,19 +22,28 @@ class VeiculosController {
         return res.status(400).json({ message });
       }
 
+      const placaFormatada = placa.trim().toUpperCase();
+
+      if (!/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)) {
+        return res.status(400).json({
+          message: "Informe uma placa válida.",
+        });
+      }
+
       if (tipo !== "CARRO" && tipo !== "MOTO") {
         return res.status(400).json({
           message: "Tipo de veículo inválido.",
         });
       }
 
-      const veiculoPlaca = await modelVeiculos.findVeiculoPlaca(placa);
+      const veiculoPlaca = await modelVeiculos.findVeiculoPlaca(placaFormatada);
+
       if (veiculoPlaca) {
         let message = "Veiculo já existe!";
         return res.status(400).json({ message });
       }
 
-      await modelVeiculos.veiculoRegister(placa, tipo);
+      await modelVeiculos.veiculoRegister(placaFormatada, tipo);
       let message = "Veiculo cadastrado com sucesso.";
       return res.status(201).json({ message });
     } catch (error) {
@@ -66,14 +75,9 @@ class VeiculosController {
     }
   }
 
+  static async veiculoEdit(req, res) {}
 
-  static async veiculoEdit(req, res){
-
-  }
-
-  static async veiculoDelete(req, res){
-    
-  }
+  static async veiculoDelete(req, res) {}
 }
 
 export default VeiculosController;

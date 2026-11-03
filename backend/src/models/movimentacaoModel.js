@@ -1,11 +1,13 @@
 import conect from "../config/database.js";
+import veiculoModel from "./veiculoModel.js";
 
-//listando movimentacao
+// Lista todas as movimentações
 async function listMovimentacao() {
   try {
     const sql = `
-        SELECT * FROM movimentacoes;
-        `;
+      SELECT * FROM movimentacoes;
+    `;
+
     const [dados] = await conect.query(sql);
     return dados;
   } catch (error) {
@@ -14,21 +16,18 @@ async function listMovimentacao() {
   }
 }
 
-/* 
-buscando entrada em aberto pelo veiculo vai 
-funcionar como uma validação para verificar se veiculo 
-tem etrada em aberto
- */
+// Busca movimentação em aberto pela placa
 async function findMovimentacaoPlaca(placa) {
   try {
     const sql = `
-        SELECT m.*
-        FROM movimentacoes AS m
-        INNER JOIN veiculos AS v
+      SELECT m.*
+      FROM movimentacoes AS m
+      INNER JOIN veiculos AS v
         ON m.veiculo_id = v.id
-        WHERE v.placa = ?
-        AND m.data_saida IS NULL;
+      WHERE v.placa = ?
+      AND m.data_saida IS NULL;
     `;
+
     const [dados] = await conect.query(sql, [placa]);
     return dados[0];
   } catch (error) {
@@ -37,7 +36,7 @@ async function findMovimentacaoPlaca(placa) {
   }
 }
 
-// registra entrada com data e hora geradas pelo MySQL
+// Registra entrada com data e hora geradas pelo MySQL
 async function registerEntrada(veiculo_id, usuario_entrada_id, origem_entrada) {
   try {
     const sql = `
@@ -63,8 +62,7 @@ async function registerEntrada(veiculo_id, usuario_entrada_id, origem_entrada) {
   }
 }
 
-//registra saida
-// registra saída com data e hora geradas pelo MySQL
+// Registra saída com data e hora geradas pelo MySQL
 async function registerSaida(usuario_saida_id, origem_saida, id) {
   try {
     const sql = `
@@ -90,13 +88,15 @@ async function registerSaida(usuario_saida_id, origem_saida, id) {
   }
 }
 
-//busca movimentação pelo id
+// Busca movimentação pelo ID
 async function findMovimentacaoId(id) {
   try {
     const sql = `
-    SELECT * FROM movimentacoes
-    WHERE id = ?;
+      SELECT *
+      FROM movimentacoes
+      WHERE id = ?;
     `;
+
     const [dados] = await conect.query(sql, [id]);
     return dados[0];
   } catch (error) {
@@ -105,19 +105,20 @@ async function findMovimentacaoId(id) {
   }
 }
 
-//buscando outra movimentacao que ta aberta
+// Busca outra movimentação em aberto pela placa
 async function findOutraMovimentacaoAberta(placa, id) {
   try {
     const sql = `
-        SELECT *
+      SELECT *
       FROM movimentacoes
       INNER JOIN veiculos
         ON movimentacoes.veiculo_id = veiculos.id
       WHERE veiculos.placa = ?
-        AND movimentacoes.data_saida IS NULL
-        AND movimentacoes.id <> ?
+      AND movimentacoes.data_saida IS NULL
+      AND movimentacoes.id <> ?
       LIMIT 1;
     `;
+
     const [dados] = await conect.query(sql, [placa, id]);
     return dados[0];
   } catch (error) {
@@ -125,6 +126,7 @@ async function findOutraMovimentacaoAberta(placa, id) {
     throw error;
   }
 }
+
 // Busca movimentação dentro da transação
 async function findMovimentacaoIdTransacao(conexao, id) {
   const sql = `
@@ -138,7 +140,7 @@ async function findMovimentacaoIdTransacao(conexao, id) {
   return dados[0];
 }
 
-// Verifica se o veículo ainda está associado a alguma movimentação
+// Verifica se o veículo possui outras movimentações
 async function findMovimentacaoPorVeiculo(conexao, veiculo_id) {
   const sql = `
     SELECT id
@@ -151,7 +153,7 @@ async function findMovimentacaoPorVeiculo(conexao, veiculo_id) {
   return dados[0];
 }
 
-// verifica se existe outra movimentação aberta para o veículo
+// Verifica outra movimentação em aberto pelo ID do veículo
 async function findOutraMovimentacaoAbertaPorVeiculo(conexao, veiculo_id, id) {
   try {
     const sql = `
@@ -164,7 +166,6 @@ async function findOutraMovimentacaoAbertaPorVeiculo(conexao, veiculo_id, id) {
     `;
 
     const [dados] = await conexao.query(sql, [veiculo_id, id]);
-
     return dados[0];
   } catch (error) {
     console.error(error);
@@ -172,7 +173,7 @@ async function findOutraMovimentacaoAbertaPorVeiculo(conexao, veiculo_id, id) {
   }
 }
 
-// atualiza uma movimentação usando uma conexão da transação
+// Atualiza movimentação usando a conexão da transação
 async function updateMovimentacao(
   conexao,
   id,
@@ -210,20 +211,52 @@ async function updateMovimentacao(
   }
 }
 
-// exclui uma movimentação usando uma conexão da transação
-async function deleteMovimentacao(conexao, id) {
+// Exclui movimentação usando a conexão da transação
+async function deleteMovimentacaoTransacao(conexao, id) {
+  const sql = `
+    DELETE FROM movimentacoes
+    WHERE id = ?;
+  `;
+
+  const [dados] = await conexao.query(sql, [id]);
+  return dados;
+}
+
+// Exclui movimentação e remove o veículo se não possuir histórico
+async function deleteMovimentacao(id) {
+  const conexao = await conect.getConnection();
+
   try {
-    const sql = `
-      DELETE FROM movimentacoes
-      WHERE id = ?;
-    `;
+    await conexao.beginTransaction();
 
-    const [dados] = await conexao.query(sql, [id]);
+    const movimentacao = await findMovimentacaoIdTransacao(conexao, id);
 
-    return dados;
+    if (!movimentacao) {
+      await conexao.rollback();
+      return false;
+    }
+
+    await deleteMovimentacaoTransacao(conexao, id);
+
+    const veiculo = await findMovimentacaoPorVeiculo(
+      conexao,
+      movimentacao.veiculo_id,
+    );
+
+    if (!veiculo) {
+      await veiculoModel.veiculoDeleteTransacao(
+        conexao,
+        movimentacao.veiculo_id,
+      );
+    }
+
+    await conexao.commit();
+    return true;
   } catch (error) {
-    console.error(error);
+    await conexao.rollback();
     throw error;
+  } finally {
+    conexao.release();
   }
 }
 
@@ -237,6 +270,6 @@ export default {
   findOutraMovimentacaoAberta,
   findOutraMovimentacaoAbertaPorVeiculo,
   findMovimentacaoPorVeiculo,
-  deleteMovimentacao,
   updateMovimentacao,
+  deleteMovimentacao,
 };

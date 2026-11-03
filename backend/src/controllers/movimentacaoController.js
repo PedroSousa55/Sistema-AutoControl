@@ -44,7 +44,18 @@ class MovimentacaoController {
     try {
       const { placa, tipo } = req.body;
 
-      if (!placa || !tipo) {
+      const placaFormatada = placa?.trim().toUpperCase();
+
+      if (
+        !placaFormatada ||
+        !/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)
+      ) {
+        return res.status(400).json({
+          message: "Informe uma placa válida.",
+        });
+      }
+
+      if (!placaFormatada || !tipo) {
         return res.status(400).json({
           message: "Placa e tipo são obrigatórios.",
         });
@@ -56,7 +67,8 @@ class MovimentacaoController {
         });
       }
 
-      const placaDentro = await modelMovimentacao.findMovimentacaoPlaca(placa);
+      const placaDentro =
+        await modelMovimentacao.findMovimentacaoPlaca(placaFormatada);
 
       if (placaDentro) {
         return res.status(409).json({
@@ -106,14 +118,25 @@ class MovimentacaoController {
     try {
       const { placa } = req.body;
 
-      if (!placa) {
+      const placaFormatada = placa?.trim().toUpperCase();
+
+      if (
+        !placaFormatada ||
+        !/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)
+      ) {
+        return res.status(400).json({
+          message: "Informe uma placa válida.",
+        });
+      }
+
+      if (!placaFormatada) {
         return res.status(400).json({
           message: "Informe a placa do veículo.",
         });
       }
 
       const movimentacaoAberta =
-        await modelMovimentacao.findMovimentacaoPlaca(placa);
+        await modelMovimentacao.findMovimentacaoPlaca(placaFormatada);
 
       if (!movimentacaoAberta) {
         return res.status(404).json({
@@ -132,7 +155,7 @@ class MovimentacaoController {
           message: "A movimentação não está mais em aberto.",
         });
       }
-
+      await modelMovimentacao.findMovimentacaoPlaca(placaFormatada);
       return res.status(200).json({
         message: "Saída registrada com sucesso.",
         id: movimentacaoAberta.id,
@@ -312,34 +335,34 @@ class MovimentacaoController {
   }
 
   //deletar movimentação
+
+  // Deletar movimentação
   static async deleteMovimentacao(req, res) {
     try {
       const { id } = req.params;
 
+      // Verifica se somente ADM pode excluir
+      if (req.user.tipo !== "ADM") {
+        return res.status(403).json({
+          message: "Apenas o administrador pode excluir movimentações.",
+        });
+      }
+
+      // Valida o ID
       if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
         return res.status(400).json({
           message: "ID da movimentação inválido.",
         });
       }
 
-      const movimentacao = await modelMovimentacao.findMovimentacaoId(id);
+      // Executa a exclusão no Model
+      const resultado = await modelMovimentacao.deleteMovimentacao(id);
 
-      if (!movimentacao) {
+      if (!resultado) {
         return res.status(404).json({
           message: "Movimentação não encontrada.",
         });
       }
-
-      if (
-        movimentacao.origem_entrada === "AUTOMATICA" ||
-        movimentacao.origem_saida === "AUTOMATICA"
-      ) {
-        return res.status(400).json({
-          message:
-            "Movimentações automáticas não podem ser excluídas manualmente.",
-        });
-      }
-      await modelMovimentacao.deleteMovimentacao(id);
 
       return res.status(200).json({
         message: "Movimentação excluída com sucesso.",
