@@ -60,6 +60,105 @@ function fecharModal() {
   modalConteudo.innerHTML = "";
 }
 
+// Área global das notificações
+const areaNotificacoes = document.getElementById("notificacoes");
+
+// Exibe uma notificação de sucesso, erro ou aviso
+function mostrarNotificacao(mensagem, tipo = "sucesso", titulo = "Sucesso") {
+  const notificacao = document.createElement("div");
+  notificacao.className = `notificacao notificacao-${tipo}`;
+
+  const conteudo = document.createElement("div");
+  conteudo.className = "notificacao-conteudo";
+
+  const tituloElemento = document.createElement("h3");
+  tituloElemento.className = "notificacao-titulo";
+  tituloElemento.textContent = titulo;
+
+  const mensagemElemento = document.createElement("p");
+  mensagemElemento.className = "notificacao-mensagem";
+  mensagemElemento.textContent = mensagem;
+
+  const btnFechar = document.createElement("button");
+  btnFechar.type = "button";
+  btnFechar.className = "notificacao-fechar";
+  btnFechar.textContent = "×";
+  btnFechar.setAttribute("aria-label", "Fechar notificação");
+
+  conteudo.append(tituloElemento, mensagemElemento);
+  notificacao.append(conteudo, btnFechar);
+  areaNotificacoes.appendChild(notificacao);
+
+  const remover = () => notificacao.remove();
+
+  btnFechar.addEventListener("click", remover);
+
+  // Notificações comuns desaparecem após 4 segundos
+  setTimeout(remover, 4000);
+}
+
+// Exibe uma confirmação discreta no canto da tela
+function confirmarAcao({
+  titulo,
+  mensagem,
+  textoConfirmar = "Excluir",
+  aoConfirmar,
+}) {
+  const notificacao = document.createElement("div");
+  notificacao.className = "notificacao notificacao-confirmacao";
+
+  const conteudo = document.createElement("div");
+  conteudo.className = "notificacao-conteudo";
+
+  const tituloElemento = document.createElement("h3");
+  tituloElemento.className = "notificacao-titulo";
+  tituloElemento.textContent = titulo;
+
+  const mensagemElemento = document.createElement("p");
+  mensagemElemento.className = "notificacao-mensagem";
+  mensagemElemento.textContent = mensagem;
+
+  const acoes = document.createElement("div");
+  acoes.className = "notificacao-acoes";
+
+  const btnCancelar = document.createElement("button");
+  btnCancelar.type = "button";
+  btnCancelar.className = "notificacao-cancelar";
+  btnCancelar.textContent = "Cancelar";
+
+  const btnConfirmar = document.createElement("button");
+  btnConfirmar.type = "button";
+  btnConfirmar.className = "notificacao-confirmar";
+  btnConfirmar.textContent = textoConfirmar;
+
+  acoes.append(btnCancelar, btnConfirmar);
+  conteudo.append(tituloElemento, mensagemElemento, acoes);
+  notificacao.appendChild(conteudo);
+
+  areaNotificacoes.appendChild(notificacao);
+
+  btnCancelar.addEventListener("click", () => {
+    notificacao.remove();
+  });
+
+  btnConfirmar.addEventListener("click", async () => {
+    try {
+      btnConfirmar.disabled = true;
+      btnCancelar.disabled = true;
+      btnConfirmar.textContent = "Aguarde...";
+
+      await aoConfirmar();
+
+      notificacao.remove();
+    } catch (error) {
+      // A função responsável pela ação pode tratar o erro.
+      btnConfirmar.disabled = false;
+      btnCancelar.disabled = false;
+      btnConfirmar.textContent = textoConfirmar;
+    }
+  });
+}
+
 // Abre o formulário de cadastro de entrada
 function abrirFormularioEntrada() {
   const formulario = `
@@ -120,8 +219,7 @@ function abrirFormularioEntrada() {
           tipo,
         });
 
-        alert(resposta.message);
-
+        mostrarNotificacao(resposta.message, "sucesso", "Entrada registrada");
         fecharModal();
 
         await carregarResumo();
@@ -129,7 +227,11 @@ function abrirFormularioEntrada() {
       } catch (error) {
         console.error("Erro ao registrar entrada:", error);
 
-        alert(error.message || "Não foi possível registrar a entrada.");
+        mostrarNotificacao(
+          error.message || "Não foi possível registrar a entrada.",
+          "erro",
+          "Erro ao registrar entrada",
+        );
       } finally {
         if (document.getElementById("form_cadastro_entrada")) {
           btnRegistrar.disabled = false;
@@ -198,14 +300,21 @@ function abrirFormularioEdicao(veiculo) {
           tipo,
         });
 
-        alert(resposta.message);
-
+        mostrarNotificacao(
+          resposta.message,
+          "sucesso",
+          "Veiculo Atualizado com sucesso!",
+        );
         fecharModal();
         await carregarVeiculos();
       } catch (error) {
         console.error("Erro ao editar veículo:", error);
 
-        alert(error.message || "Não foi possível editar o veículo.");
+        mostrarNotificacao(
+          error.message || "Não foi possível atualizar registro de veículo.",
+          "erro",
+          "Erro ao registrar entrada",
+        );
       } finally {
         btnSalvar.disabled = false;
         btnSalvar.textContent = "Salvar alterações";
@@ -214,48 +323,29 @@ function abrirFormularioEdicao(veiculo) {
 }
 
 function abrirConfirmacaoExclusao(veiculo) {
-  abrirModal(`
-    <h2>Excluir veículo</h2>
+  confirmarAcao({
+    titulo: "Excluir veículo",
+    mensagem: `Deseja realmente excluir o veículo ${veiculo.placa}?`,
+    textoConfirmar: "Excluir",
 
-    <p>
-      Tem certeza de que deseja excluir o veículo
-      <strong>${veiculo.placa}</strong>?
-    </p>
-
-    <div class="modal-botoes">
-      <button type="button" id="cancelar-exclusao">Cancelar</button>
-      <button type="button" id="confirmar-exclusao">Confirmar</button>
-    </div>
-  `);
-
-  document
-    .getElementById("cancelar-exclusao")
-    .addEventListener("click", fecharModal);
-
-  document
-    .getElementById("confirmar-exclusao")
-    .addEventListener("click", async (e) => {
-      const btnConfirmar = e.currentTarget;
-
+    aoConfirmar: async () => {
       try {
-        btnConfirmar.disabled = true;
-        btnConfirmar.textContent = "Excluindo...";
-
         const resposta = await veiculoApi.deleteVeiculo(veiculo.id);
 
-        alert(resposta.message);
+        mostrarNotificacao(resposta.message, "sucesso", "Veículo excluído");
 
-        fecharModal();
         await carregarVeiculos();
       } catch (error) {
-        console.error("Erro ao excluir veículo:", error);
+        mostrarNotificacao(
+          error.message || "Não foi possível excluir o veículo.",
+          "erro",
+          "Erro ao excluir",
+        );
 
-        alert(error.message || "Não foi possível excluir o veículo.");
-      } finally {
-        btnConfirmar.disabled = false;
-        btnConfirmar.textContent = "Confirmar";
+        throw error;
       }
-    });
+    },
+  });
 }
 
 // Abre o formulário de cadastro de veículo
@@ -315,11 +405,19 @@ function abrirFormularioVeiculo() {
           tipo,
         });
 
-        alert(resposta.message);
+        mostrarNotificacao(
+          resposta.message,
+          "sucesso",
+          "Veículo registrado com sucesso.",
+        );
         fecharModal();
       } catch (error) {
         console.error("Erro ao cadastrar veículo:", error);
-        alert(error.message || "Não foi possível cadastrar o veículo.");
+        mostrarNotificacao(
+          error.message || "Não foi possível registrar o veículo.",
+          "erro",
+          "Erro ao registrar entrada",
+        );
       } finally {
         if (document.getElementById("form_cadastro_veiculo")) {
           btnCadastrar.disabled = false;
@@ -406,18 +504,40 @@ async function carregarEntradas() {
         hour12: false,
       });
 
+      const status = movimentacao.data_saida ? "Fora" : "Dentro";
+
       linha.innerHTML = `
         <td>${dataFormatada}</td>
         <td>${horaFormatada}</td>
         <td>${movimentacao.placa}</td>
         <td>${movimentacao.tipo}</td>
         <td>${movimentacao.responsavel || "Não informado"}</td>
+        <td>
+          <span class="status-movimentacao status-${status.toLowerCase()}">
+            ${status}
+          </span>
+        </td>
       `;
 
-      const colunaAcoes = document.createElement("td");
-      colunaAcoes.appendChild(criarAcoesMovimentacao(movimentacao));
+      const colunaEditar = document.createElement("td");
+      const colunaExcluir = document.createElement("td");
 
-      linha.appendChild(colunaAcoes);
+      const acoes = criarAcoesMovimentacao(movimentacao);
+
+      const btnEditar = acoes.querySelector(".botao-editar");
+      const btnExcluir = acoes.querySelector(".botao-excluir");
+
+      if (btnEditar) {
+        colunaEditar.appendChild(btnEditar);
+      }
+
+      if (btnExcluir) {
+        colunaExcluir.appendChild(btnExcluir);
+      }
+
+      linha.appendChild(colunaEditar);
+      linha.appendChild(colunaExcluir);
+
       lista.appendChild(linha);
     });
 
@@ -697,10 +817,23 @@ async function carregarSaidas() {
         <td>${saida.responsavel || "Não informado"}</td>
       `;
 
-      const colunaAcoes = document.createElement("td");
-      colunaAcoes.appendChild(criarAcoesMovimentacao(saida));
+      const colunaEditar = document.createElement("td");
+      const colunaExcluir = document.createElement("td");
 
-      linha.appendChild(colunaAcoes);
+      const acoes = criarAcoesMovimentacao(saida);
+
+      const btnEditar = acoes.querySelector(".botao-editar");
+      const btnExcluir = acoes.querySelector(".botao-excluir");
+
+      if (btnEditar) {
+        colunaEditar.appendChild(btnEditar);
+      }
+      if (btnExcluir) {
+        colunaExcluir.appendChild(btnExcluir);
+      }
+
+      linha.appendChild(colunaEditar);
+      linha.appendChild(colunaExcluir);
       lista.appendChild(linha);
     });
 

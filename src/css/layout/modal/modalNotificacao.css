@@ -1,0 +1,127 @@
+/* Área global de notificações */
+.notificacoes {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: min(360px, calc(100vw - 32px));
+}
+
+/* Notificação */
+.notificacao {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #111827;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+  animation: notificacao-entrar 0.25s ease;
+}
+
+/* Conteúdo */
+.notificacao-conteudo {
+  flex: 1;
+}
+
+.notificacao-titulo {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notificacao-mensagem {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Variações */
+.notificacao-sucesso {
+  border-left: 4px solid #16a34a;
+}
+
+.notificacao-erro {
+  border-left: 4px solid #dc2626;
+}
+
+.notificacao-aviso {
+  border-left: 4px solid #d97706;
+}
+
+/* Botão de fechar */
+.notificacao-fechar {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Confirmação */
+.notificacao-confirmacao {
+  border-left: 4px solid #dc2626;
+}
+
+.notificacao-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.notificacao-acoes button {
+  padding: 7px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.notificacao-cancelar {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.notificacao-confirmar {
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.notificacao-acoes button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes notificacao-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .notificacoes {
+    right: 16px;
+    bottom: 16px;
+    width: calc(100vw - 32px);
+  }
+}
