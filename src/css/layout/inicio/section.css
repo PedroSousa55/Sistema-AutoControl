@@ -1,21 +1,20 @@
-
 section {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 18px;
-    align-items: stretch;
-    margin-top: 30px;
-    padding-bottom: 25px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+  margin-top: 30px;
+  padding-bottom: 25px;
 }
 
 .cards {
-    min-width: 0;
-    padding: 22px;
-    border: 1px solid #1b2635;
-    border-radius: 8px;
-    background: #0c111b;
-    color: #fff;
-    box-sizing: border-box;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid #1b2635;
+  border-radius: 8px;
+  background: #0c111b;
+  color: #fff;
+  box-sizing: border-box;
 }
 
 /* .veiculo_Section {
@@ -24,329 +23,440 @@ section {
 } */
 
 .veiculo {
-    grid-column: 1;
-    grid-row: 1;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .status {
-    grid-column: 2;
-    grid-row: 1;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .video {
-    grid-column: 3;
-    grid-row: 1;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .cards h1 {
-    margin: 0 0 20px;
-    font-size: 18px;
+  margin: 0 0 20px;
+  font-size: 18px;
 }
 
 .cards p {
-    margin: 12px 0;
+  margin: 12px 0;
 }
 
 /* Gráficos */
 #grafico_Linha,
 #grafico_pizza {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 #grafico_Linha {
-    height: 220px;
-    margin-top: 18px;
+  height: 240px;
+  margin-top: 18px;
 }
 
-#grafico_pizza {
-    height: 180px;
-    margin-top: 18px;
-}
-
-#grafico_Linha canvas,
-#grafico_pizza canvas {
-    width: 100% !important;
-    height: 100% !important;
+#grafico_Linha canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .legenda-movimento {
-    display: flex;
-    gap: 22px;
-    margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-bottom: 12px;
 }
 
 .legenda-movimento p {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin: 0;
-    color: #8b98ad;
-    font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #8b98ad;
+  font-size: 12px;
 }
 
 .ponto {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    flex-shrink: 0;
-    border-radius: 50%;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
 }
 
 .ponto.entrada,
 .ponto.dentro {
-    background: #16c79a;
+  background: #16a77b;
 }
 
 .ponto.saida,
 .ponto.fora {
-    background: #ff3864;
+  background: #ed3861;
 }
 
+/* Gráfico de ocupação */
 .grafico-status-container {
-    position: relative;
-    width: 100%;
-    max-width: 190px;
-    margin: 8px auto 18px;
-    aspect-ratio: 1;
+  position: relative;
+  width: 100%;
+  max-width: 190px;
+  aspect-ratio: 1;
+  margin: 12px auto 18px;
 }
 
 #grafico_pizza {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
 
 #grafico_pizza canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .centro-grafico {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    top: 60px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-top: 0;
-    box-sizing: border-box;
-    pointer-events: none;
-    color: #e5eaf3;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+  pointer-events: none;
+  color: #e5eaf3;
 }
 
 .icone-carro-status {
-    width: 25px;
-    height: 25px;
-    margin: 0 0 2px;
-    color: #8295bd;
-    flex-shrink: 0;
+  width: 25px;
+  height: 25px;
+  margin-bottom: 4px;
+  color: #8295bd;
+  flex-shrink: 0;
 }
 
 .total-veiculos {
-    font-size: 20px;
-    line-height: 1;
-    font-weight: 500;
-    color: #e5eaf3;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 500;
+  color: #e5eaf3;
 }
 
 .legenda-status {
-    max-width: 190px;
-    margin: 0 auto;
+  max-width: 190px;
+  margin: 0 auto;
 }
 
 .legenda-status p {
-    display: grid;
-    grid-template-columns: 10px 1fr auto;
-    align-items: center;
-    gap: 12px;
-    margin: 10px 0;
-    color: #c6ccda;
-    font-size: 12px;
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+  color: #c6ccda;
+  font-size: 12px;
 }
 
 .legenda-status strong {
-    color: #dce2ed;
-    font-weight: 500;
+  color: #dce2ed;
+  font-weight: 500;
 }
-.grafico-status-container {
-    bottom: 20px;
-}
+
 .imagem-veiculo {
-    display: block;
-    width: 100%;
-    height: 155px;
-    object-fit: cover;
-    object-position: center;
-    border: 1px solid #1b2635;
-    border-radius: 8px;
-    margin: 0 0 12px;
-    box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid #1b2635;
+  border-radius: 8px;
+  margin: 0 0 12px;
+  box-sizing: border-box;
 }
 
 #status_Entrada_Saida {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: #16c79a;
-    font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #16c79a;
+  font-weight: 600;
 }
 
 #status_placa {
-    color: #c6ccda;
-    font-size: 13px;
+  color: #c6ccda;
+  font-size: 13px;
 }
 
-@media (max-width: 1100px) {
-    section {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 
-    .veiculo_Section {
-        width: auto;
-    }
-
-    .veiculo {
-        grid-column: 1 / -1;
-    }
-
-    .status {
-        grid-column: 1;
-    }
-
-    .video {
-        grid-column: 2;
-    }
-}
 
 .historico-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    width: 100%;
-    margin-top: 0;
-    padding-bottom: 25px;
-    box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+  margin-top: 0;
+  padding-bottom: 25px;
+  box-sizing: border-box;
 }
 
 .historico-card {
-    width: 100%;
-    min-width: 0;
-    padding: 16px;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
 }
 
 .historico-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #1b2635;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1b2635;
 }
 
 .historico-titulo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .historico-titulo h1 {
-    margin: 0;
-    font-size: 15px;
-    white-space: nowrap;
+  margin: 0;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .historico-icone {
-    width: 19px;
-    height: 19px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
 
 .entrada-icone {
-    color: #16c79a;
+  color: #16c79a;
 }
 
 .saida-icone {
-    color: #ff3864;
+  color: #ff3864;
 }
 .ver-todas {
-    color: #8295ff;
-    font-size: 11px;
-    text-decoration: none;
-    white-space: nowrap;
+  color: #8295ff;
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .ver-todas:hover {
-    color: #aab7ff;
+  color: #aab7ff;
 }
 
 .historico-tabela {
-    width: 100%;
+  width: 100%;
 }
 
 .historico-linha {
-    display: grid;
-    grid-template-columns: 1fr 1.4fr auto;
-    align-items: center;
-    gap: 10px;
-    min-height: 29px;
-    padding: 3px 6px;
-    border-bottom: 1px solid #141d2a;
-    color: #dce2ed;
-    font-size: 11px;
-    box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 29px;
+  padding: 3px 6px;
+  border-bottom: 1px solid #141d2a;
+  color: #dce2ed;
+  font-size: 11px;
+  box-sizing: border-box;
 }
 
 .historico-linha:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .historico-linha > span {
-    min-width: 0;
+  min-width: 0;
 }
 
 .historico-colunas {
-    min-height: 25px;
-    color: #8b98ad;
-    font-size: 10px;
+  min-height: 25px;
+  color: #8b98ad;
+  font-size: 10px;
 }
 
 .historico-colunas span:last-child,
 .historico-linha > span:last-child {
-    text-align: center;
+  text-align: center;
 }
 
 .historico-horario {
-    color: #c6ccda;
+  color: #c6ccda;
 }
 
 .tipo-veiculo {
-    display: inline-block;
-    min-width: 40px;
-    padding: 3px 9px;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 10px;
-    line-height: 1.2;
-    box-sizing: border-box;
+  display: inline-block;
+  min-width: 40px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.2;
+  box-sizing: border-box;
 }
 
 .entrada-tipo {
-    background: #064b3b;
-    color: #6ce6bd;
+  background: #064b3b;
+  color: #6ce6bd;
 }
 
 .saida-tipo {
-    background: #672331;
-    color: #ffb1c0;
+  background: #672331;
+  color: #ffb1c0;
+}
+
+/* Layout intermediário com Grid Areas */
+@media (min-width: 601px) and (max-width: 1100px) {
+  /* Quatro indicadores */
+  #dashboard > .cards_main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "veiculos entradas"
+      "saidas vagas";
+    gap: 14px;
+    width: 100%;
+  }
+
+  .card.veiculo {
+    grid-area: veiculos;
+  }
+
+  .card.entrada {
+    grid-area: entradas;
+  }
+
+  .card.saida {
+    grid-area: saidas;
+  }
+
+  .card.vagas {
+    grid-area: vagas;
+  }
+
+  #dashboard > .cards_main .card {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* Gráficos, status e câmera */
+  #dashboard > section:not(.historico-grid) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "movimento movimento"
+      "status video";
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  .veiculo_Section {
+    grid-area: movimento;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .status {
+    grid-area: status;
+    min-width: 0;
+  }
+
+  .video {
+    grid-area: video;
+    min-width: 0;
+  }
+
+  .cards {
+    padding: 16px;
+  }
+
+  #grafico_Linha {
+    height: 220px;
+  }
+
+  .grafico-status-container {
+    max-width: 170px;
+  }
+
+  /* Histórico */
+  #dashboard > .historico-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "entradas saidas";
+    gap: 14px;
+  }
+
+  .historico-card:nth-child(1) {
+    grid-area: entradas;
+  }
+
+  .historico-card:nth-child(2) {
+    grid-area: saidas;
+  }
+}
+
+/* Responsividade para celulares */
+@media (max-width: 600px) {
+  section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .veiculo,
+  .status,
+  .video {
+    grid-column: 1;
+    grid-row: auto;
+    min-width: 0;
+  }
+
+  .cards {
+    padding: 16px;
+  }
+
+  #grafico_Linha {
+    width: 100%;
+    height: 200px;
+    margin-top: 12px;
+  }
+
+  .grafico-status-container {
+    width: 100%;
+    max-width: 190px;
+    margin: 12px auto 18px;
+  }
+
+  #grafico_pizza {
+    margin: 0;
+  }
+
+  .centro-grafico {
+    inset: 0;
+  }
+
+  .historico-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
 }
