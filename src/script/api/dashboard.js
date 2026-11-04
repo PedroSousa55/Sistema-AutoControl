@@ -491,6 +491,7 @@ async function carregarResumo() {
     // Atualiza os gráficos do dashboard
     carregarGraficoMovimento(resumo);
     carregarGraficoPizza(resumo);
+    await carregarHistoricos();
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
     mostrarNotificacao(
@@ -499,6 +500,79 @@ async function carregarResumo() {
       "Erro ao carregar dashboard",
     );
   }
+}
+
+// Carrega os últimos registros de entrada e saída no dashboard
+async function carregarHistoricos() {
+  const listaEntradas = document.getElementById("ultimas_entradas");
+  const listaSaidas = document.getElementById("ultimas_saidas");
+
+  try {
+    const [entradas, saidas] = await Promise.all([
+      movimentacaoApi.listMovimentacoes(),
+      movimentacaoApi.listSaidas(),
+    ]);
+
+    // Limita a exibição aos cinco registros mais recentes
+    renderizarHistorico(
+      listaEntradas,
+      entradas.slice(0, 5),
+      "data_entrada",
+      "entrada-tipo",
+    );
+
+    renderizarHistorico(
+      listaSaidas,
+      saidas.slice(0, 5),
+      "data_saida",
+      "saida-tipo",
+    );
+  } catch (error) {
+    console.error("Erro ao carregar históricos:", error);
+  }
+}
+
+// Renderiza os registros dentro do histórico
+function renderizarHistorico(container, registros, campoData, classeTipo) {
+  container.innerHTML = "";
+
+  if (registros.length === 0) {
+    const mensagem = document.createElement("div");
+    mensagem.className = "historico-linha";
+    mensagem.textContent = "Nenhum registro encontrado.";
+
+    container.appendChild(mensagem);
+    return;
+  }
+
+  registros.forEach((registro) => {
+    const linha = document.createElement("div");
+    linha.className = "historico-linha";
+
+    const data = new Date(registro[campoData].replace(" ", "T"));
+
+    const horario = document.createElement("span");
+    horario.className = "historico-horario";
+    horario.textContent = data.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    const placa = document.createElement("span");
+    placa.textContent = registro.placa;
+
+    const tipoContainer = document.createElement("span");
+
+    const tipo = document.createElement("span");
+    tipo.className = `tipo-veiculo ${classeTipo}`;
+    tipo.textContent = registro.tipo;
+
+    tipoContainer.appendChild(tipo);
+
+    linha.append(horario, placa, tipoContainer);
+    container.appendChild(linha);
+  });
 }
 
 // Carrega a lista de entradas
