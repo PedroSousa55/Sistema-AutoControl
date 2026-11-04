@@ -1,4 +1,9 @@
 import {
+  carregarGraficoMovimento,
+  carregarGraficoPizza,
+} from "../dashboard/graficos.js";
+
+import {
   usuarioApi,
   dashboardApi,
   veiculoApi,
@@ -482,6 +487,10 @@ async function carregarResumo() {
 
     document.getElementById("Vagasdisponivel").textContent =
       resumo.vagas_disponiveis;
+
+    // Atualiza os gráficos do dashboard
+    carregarGraficoMovimento(resumo);
+    carregarGraficoPizza(resumo);
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
     mostrarNotificacao(
