@@ -11,3 +11,5 @@ const porta = process.env.PORTA;
 const end = process.env.END;
 
 app.listen(porta, () => console.log(`Servidor no end: ${end}:${porta}`));
+
+

@@ -15,7 +15,10 @@ async function listMovimentacao() {
         m.usuario_entrada_id,
         v.placa,
         v.tipo,
-        u.nome AS responsavel
+        CASE
+          WHEN m.origem_entrada = 'AUTOMATICA' THEN 'Automático'
+          ELSE u.nome
+          END AS responsavel
       FROM movimentacoes AS m
       INNER JOIN veiculos AS v
         ON m.veiculo_id = v.id
@@ -44,7 +47,10 @@ async function listSaidas() {
         m.usuario_entrada_id,
         v.placa,
         v.tipo,
-        u.nome AS responsavel
+        CASE
+          WHEN m.origem_saida = 'AUTOMATICA' THEN 'Automático'
+          ELSE u.nome
+        END AS responsavel
       FROM movimentacoes AS m
       INNER JOIN veiculos AS v
         ON m.veiculo_id = v.id
@@ -408,6 +414,40 @@ async function deleteMovimentacao(id) {
   }
 }
 
+// Registra entrada automática enviada pela câmera
+async function registerEntradaAutomatica(veiculo_id, data_entrada) {
+  const sql = `
+    INSERT INTO movimentacoes (
+      veiculo_id,
+      usuario_entrada_id,
+      data_entrada,
+      origem_entrada
+    )
+    VALUES (?, NULL, ?, 'AUTOMATICA');
+  `;
+
+  const [dados] = await conect.query(sql, [veiculo_id, data_entrada]);
+
+  return dados;
+}
+
+// Registra saída automática enviada pela câmera
+async function registerSaidaAutomatica(id, data_saida) {
+  const sql = `
+    UPDATE movimentacoes
+    SET
+      data_saida = ?,
+      usuario_saida_id = NULL,
+      origem_saida = 'AUTOMATICA'
+    WHERE id = ?
+    AND data_saida IS NULL;
+  `;
+
+  const [dados] = await conect.query(sql, [data_saida, id]);
+
+  return dados;
+}
+
 export default {
   listMovimentacao,
   findMovimentacaoPlaca,
@@ -422,4 +462,6 @@ export default {
   editMovimentacaoTransacao,
   deleteMovimentacao,
   listSaidas,
+  registerEntradaAutomatica,
+  registerSaidaAutomatica,
 };

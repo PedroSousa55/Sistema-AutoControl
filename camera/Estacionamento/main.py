@@ -196,24 +196,35 @@ def tratar_entrada(evento, api, esp32, registro, situacao, liberada):
         situacao.definir("ENTRADA LIBERADA (sistema fora do ar - pendente)", AMARELO)
 
 
+
 def tratar_saida(evento, api, esp32, registro, situacao, liberada):
-    resposta = api.consultar_pagamento(evento["placa"])
+
+    # Envia a saída para o AutoControl.
+    resposta = api.registrar_saida(evento)
 
     if resposta is None:
-        evento["pago"], evento["valor"] = None, None
+
+        # A API não confirmou a saída.
+        # A cancela permanece fechada.
         esp32.enviar("led_vermelho")
-        situacao.definir("SISTEMA FORA DO AR - chame o atendente", VERMELHO)
-    elif resposta["pago"]:
-        evento["pago"], evento["valor"] = True, resposta["valor"]
-        liberar(evento["placa"], liberada, esp32)
-        situacao.definir("PAGO - SAIDA LIBERADA", VERDE)
+
+        situacao.definir(
+            "SAIDA NAO CONFIRMADA - chame o atendente",
+            VERMELHO
+        )
+
     else:
-        evento["pago"], evento["valor"] = False, resposta["valor"]
-        esp32.enviar("led_vermelho")
-        valor = f" R$ {resposta['valor']:.2f}" if isinstance(resposta["valor"], (int, float)) else ""
-        situacao.definir(f"PAGAMENTO PENDENTE{valor}", VERMELHO)
+
+        # A API confirmou HTTP 200 e encerrou a movimentação.
+        liberar(evento["placa"], liberada, esp32)
+
+        situacao.definir(
+            "SAIDA REGISTRADA - CANCELA LIBERADA",
+            VERDE
+        )
 
     registro.gravar(evento)
+
 
 
 def main():

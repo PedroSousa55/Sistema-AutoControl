@@ -2,6 +2,8 @@ import express from "express";
 import MovimentacaoController from "../controllers/movimentacaoController.js";
 import admMiddleware from "../middlewares/admMiddleware.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
+import cameraMiddleware from "../middlewares/cameraMiddleware.js";
+
 const router = express.Router();
 
 //rota de movimentacao
@@ -40,4 +42,16 @@ router.delete(
   MovimentacaoController.deleteMovimentacao,
 );
 
+// Integração das câmeras
+router.post(
+  "/camera/entrada",
+  cameraMiddleware,
+  MovimentacaoController.registerEntradaAutomatica,
+);
+
+router.post(
+  "/camera/saida",
+  cameraMiddleware,
+  MovimentacaoController.registerSaidaAutomatica,
+);
 export default router;

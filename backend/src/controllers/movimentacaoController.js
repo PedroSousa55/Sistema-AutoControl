@@ -1,5 +1,78 @@
 import modelMovimentacao from "../models/movimentacaoModel.js";
 import veiculoModel from "../models/veiculoModel.js";
+
+// Valida e converte data ISO 8601 para DATETIME no horário de São Luís
+function converterDataCamera(dataHora) {
+  if (typeof dataHora !== "string") {
+    return null;
+  }
+
+  const formatoISO =
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+
+  const partes = dataHora.match(formatoISO);
+
+  if (!partes) {
+    return null;
+  }
+
+  const [, ano, mes, dia, hora, minuto, segundo, fuso] = partes;
+
+  const anoNumero = Number(ano);
+  const mesNumero = Number(mes);
+  const diaNumero = Number(dia);
+  const horaNumero = Number(hora);
+  const minutoNumero = Number(minuto);
+  const segundoNumero = Number(segundo);
+
+  const diasNoMes = new Date(Date.UTC(anoNumero, mesNumero, 0)).getUTCDate();
+
+  if (
+    mesNumero < 1 ||
+    mesNumero > 12 ||
+    diaNumero < 1 ||
+    diaNumero > diasNoMes ||
+    horaNumero > 23 ||
+    minutoNumero > 59 ||
+    segundoNumero > 59
+  ) {
+    return null;
+  }
+
+  if (fuso !== "Z") {
+    const [horasFuso, minutosFuso] = fuso.slice(1).split(":").map(Number);
+
+    if (horasFuso > 14 || minutosFuso > 59) {
+      return null;
+    }
+  }
+
+  const data = new Date(dataHora);
+
+  if (Number.isNaN(data.getTime())) {
+    return null;
+  }
+
+  const partesData = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Fortaleza",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(data);
+
+  const valores = {};
+
+  partesData.forEach((parte) => {
+    valores[parte.type] = parte.value;
+  });
+
+  return `${valores.year}-${valores.month}-${valores.day} ${valores.hour}:${valores.minute}:${valores.second}`;
+}
+
 class MovimentacaoController {
   // Lista todas as movimentações
   static async findMovimentacao(req, res) {
@@ -113,6 +186,81 @@ class MovimentacaoController {
     }
   }
 
+  // Registra entrada automática enviada pela câmera
+  static async registerEntradaAutomatica(req, res) {
+    try {
+      const { placa, data_hora } = req.body;
+
+      const placaFormatada =
+        typeof placa === "string" ? placa.trim().toUpperCase() : "";
+
+      if (
+        !placaFormatada ||
+        !/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)
+      ) {
+        return res.status(400).json({
+          message: "A câmera enviou uma placa inválida.",
+        });
+      }
+
+      const dataEntrada = converterDataCamera(data_hora);
+
+      if (!dataEntrada) {
+        return res.status(400).json({
+          message:
+            "Data e hora da câmera inválidas. Utilize ISO 8601 com fuso horário.",
+        });
+      }
+
+      // Verifica se já existe uma entrada aberta
+      const movimentacaoAberta =
+        await modelMovimentacao.findMovimentacaoPlaca(placaFormatada);
+
+      if (movimentacaoAberta) {
+        return res.status(409).json({
+          message: "Esse veículo já possui uma entrada em aberto.",
+        });
+      }
+
+      // Procura o veículo cadastrado
+      let veiculo = await veiculoModel.findVeiculoPlaca(placaFormatada);
+
+      // Se não existir, cadastra com tipo NULL
+      if (!veiculo) {
+        const resultado = await veiculoModel.veiculoRegister(
+          placaFormatada,
+          null,
+        );
+
+        veiculo = {
+          id: resultado.insertId,
+          placa: placaFormatada,
+          tipo: null,
+        };
+      }
+
+      // Registra a movimentação automática
+      const resultado = await modelMovimentacao.registerEntradaAutomatica(
+        veiculo.id,
+        dataEntrada,
+      );
+
+      return res.status(201).json({
+        message: "Entrada automática registrada com sucesso.",
+        id: resultado.insertId,
+        placa: placaFormatada,
+        data_entrada: dataEntrada,
+        origem: "AUTOMATICA",
+      });
+    } catch (error) {
+      console.error("Erro na entrada automática:", error);
+
+      return res.status(500).json({
+        message: "Erro ao registrar entrada automática.",
+      });
+    }
+  }
+
   // registrando saída de veículo
   static async registerSaida(req, res) {
     try {
@@ -165,6 +313,77 @@ class MovimentacaoController {
 
       return res.status(500).json({
         message: "Erro de servidor!",
+      });
+    }
+  }
+
+  // Registra saída automática enviada pela câmera
+  static async registerSaidaAutomatica(req, res) {
+    try {
+      const { placa, data_hora } = req.body;
+
+      const placaFormatada =
+        typeof placa === "string" ? placa.trim().toUpperCase() : "";
+
+      if (
+        !placaFormatada ||
+        !/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/.test(placaFormatada)
+      ) {
+        return res.status(400).json({
+          message: "A câmera enviou uma placa inválida.",
+        });
+      }
+
+      const dataSaida = converterDataCamera(data_hora);
+
+      if (!dataSaida) {
+        return res.status(400).json({
+          message:
+            "Data e hora da câmera inválidas. Utilize ISO 8601 com fuso horário.",
+        });
+      }
+
+      // Procura a entrada em aberto
+      const movimentacaoAberta =
+        await modelMovimentacao.findMovimentacaoPlaca(placaFormatada);
+
+      if (!movimentacaoAberta) {
+        return res.status(404).json({
+          message: "Nenhuma entrada em aberto encontrada para essa placa.",
+        });
+      }
+
+      // Impede saída anterior à entrada
+      if (dataSaida < movimentacaoAberta.data_entrada) {
+        return res.status(400).json({
+          message: "A data de saída não pode ser anterior à data de entrada.",
+        });
+      }
+
+      // Atualiza a movimentação existente
+      const resultado = await modelMovimentacao.registerSaidaAutomatica(
+        movimentacaoAberta.id,
+        dataSaida,
+      );
+
+      if (resultado.affectedRows === 0) {
+        return res.status(409).json({
+          message: "A movimentação não está mais em aberto.",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Saída automática registrada com sucesso.",
+        id: movimentacaoAberta.id,
+        placa: placaFormatada,
+        data_saida: dataSaida,
+        origem: "AUTOMATICA",
+      });
+    } catch (error) {
+      console.error("Erro na saída automática:", error);
+
+      return res.status(500).json({
+        message: "Erro ao registrar saída automática.",
       });
     }
   }
