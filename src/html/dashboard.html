@@ -546,7 +546,49 @@
     <main id="relatorios_main" style="display: none">
       <h1 class="h1_txt_veiculo">Relatórios</h1>
 
-      <div class="div_main"></div>
+      <div class="relatorio_container">
+        <!-- Filtros -->
+        <section class="relatorio_filtros">
+          <div class="relatorio_filtro">
+            <label for="buscar_placa">Buscar por placa</label>
+            <input
+              type="search"
+              id="buscar_placa"
+              placeholder="Digite a placa do veículo..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="relatorio_filtro">
+            <label for="filtrar_data">Filtrar por data de entrada</label>
+            <input type="date" id="filtrar_data" />
+          </div>
+        </section>
+
+        <!-- Tabela -->
+        <section class="relatorio_tabela_container">
+          <table class="relatorio_tabela">
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Tipo</th>
+                <th>Data de entrada</th>
+                <th>Horário de entrada</th>
+                <th>Data de saída</th>
+                <th>Horário de saída</th>
+              </tr>
+            </thead>
+
+            <tbody id="relatorio_tbody">
+              <tr>
+                <td colspan="" class="relatorio_mensagem">
+                  Carregando movimentações...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
     </main>
 
     <main id="config_main" style="display: none">

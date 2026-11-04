@@ -1,3 +1,5 @@
+import { inicializarRelatorios } from "../relatorio/relatorio.js";
+
 import {
   carregarGraficoMovimento,
   carregarGraficoPizza,
@@ -1155,6 +1157,9 @@ function configPermissao(tipo) {
 
       if (idTela === "saida_main") {
         carregarSaidas();
+      }
+      if (idTela === "relatorios_main") {
+        inicializarRelatorios();
       }
     });
   });
