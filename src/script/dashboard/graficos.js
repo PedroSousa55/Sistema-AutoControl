@@ -1,25 +1,33 @@
 let graficoMovimento = null;
 let graficoPizza = null;
 
+// Cores do padrão visual antigo
+const CORES = {
+  entradas: "#16a77b",
+  saidas: "#ed3861",
+  ocupadas: "#F64468",
+  disponiveis: "#16a77b",
+};
+
 // Gráfico de entradas e saídas por horário
 export function carregarGraficoMovimento(resumo) {
   const canvas = document.getElementById("Grafico_Movimento");
 
-  if (!canvas) return;
+  if (!canvas || !resumo?.grafico) return;
 
   const labels = [
-    "00h - 02h",
-    "02h - 04h",
-    "04h - 06h",
-    "06h - 08h",
-    "08h - 10h",
-    "10h - 12h",
-    "12h - 14h",
-    "14h - 16h",
-    "16h - 18h",
-    "18h - 20h",
-    "20h - 22h",
-    "22h - 00h",
+    "02h",
+    "04h",
+    "06h",
+    "08h",
+    "10h",
+    "12h",
+    "14h",
+    "16h",
+    "18h",
+    "20h",
+    "22h",
+    "24h",
   ];
 
   const entradas = resumo.grafico.entradas;
@@ -30,7 +38,7 @@ export function carregarGraficoMovimento(resumo) {
   }
 
   graficoMovimento = new Chart(canvas, {
-    type: "bar",
+    type: "line",
 
     data: {
       labels,
@@ -39,12 +47,24 @@ export function carregarGraficoMovimento(resumo) {
         {
           label: "Entradas",
           data: entradas,
-          backgroundColor: "#397BFF",
+          borderColor: CORES.entradas,
+          backgroundColor: CORES.entradas,
+          borderWidth: 3,
+          tension: 0.4,
+          fill: false,
+          pointRadius: 3,
+          pointHoverRadius: 6,
         },
         {
           label: "Saídas",
           data: saidas,
-          backgroundColor: "#F45B69",
+          borderColor: CORES.saidas,
+          backgroundColor: CORES.saidas,
+          borderWidth: 3,
+          tension: 0.4,
+          fill: false,
+          pointRadius: 3,
+          pointHoverRadius: 6,
         },
       ],
     },
@@ -52,6 +72,18 @@ export function carregarGraficoMovimento(resumo) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
+
+      plugins: {
+        legend: {
+          position: "top",
+          align: "end",
+        },
+      },
 
       scales: {
         y: {
@@ -71,8 +103,8 @@ export function carregarGraficoPizza(resumo) {
 
   if (!canvas) return;
 
-  const dentro = Number(resumo.dentro);
-  const disponiveis = Number(resumo.vagas_disponiveis);
+  const dentro = Number(resumo.dentro) || 0;
+  const disponiveis = Number(resumo.vagas_disponiveis) || 0;
 
   if (graficoPizza) {
     graficoPizza.destroy();
@@ -82,13 +114,14 @@ export function carregarGraficoPizza(resumo) {
     type: "doughnut",
 
     data: {
-      labels: ["Ocupadas", "Disponíveis"],
+      labels: ["Livre", "Ocupado"],
 
       datasets: [
         {
-          data: [dentro, disponiveis],
-          backgroundColor: ["#397BFF", "#D9DDE5"],
+          data: [disponiveis, dentro],
+          backgroundColor: [CORES.disponiveis, CORES.ocupadas],
           borderWidth: 0,
+          hoverOffset: 5,
         },
       ],
     },
@@ -96,12 +129,28 @@ export function carregarGraficoPizza(resumo) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      cutout: "72%",
 
       plugins: {
         legend: {
-          position: "bottom",
+          display: false,
         },
       },
     },
   });
+
+  // Atualiza o total exibido no centro da rosca
+  const total = document.querySelector(".total-veiculos");
+
+  if (total) {
+    total.textContent = dentro;
+  }
+
+  // Atualiza os valores da legenda existente no HTML
+  const valoresLegenda = document.querySelectorAll(".legenda-status strong");
+
+  if (valoresLegenda.length >= 2) {
+    valoresLegenda[0].textContent = dentro;
+    valoresLegenda[1].textContent = disponiveis;
+  }
 }
