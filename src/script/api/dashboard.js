@@ -16,6 +16,51 @@ const btnSair = document.getElementById("sair_button");
 
 let usuarioLogado = null;
 
+const saudacao = document.getElementById("admin-header");
+const textoSaudacao = document.getElementById("user_h1");
+
+const nomePerfil = document.querySelector(".profile-info strong");
+const tipoPerfil = document.querySelector(".profile-info span");
+
+let saudacaoAtiva = false;
+let temporizadorSaudacao = null;
+
+// Retorna somente o primeiro e o segundo nome
+function formatarNome(nome) {
+  return nome.trim().split(/\s+/).slice(0, 2).join(" ");
+}
+
+// Preenche as informações do usuário
+function carregarPerfilUsuario(user) {
+  const nome = formatarNome(user.nome);
+
+  textoSaudacao.textContent = `Olá, ${nome}!`;
+
+  nomePerfil.textContent = nome;
+
+  tipoPerfil.textContent = user.tipo === "ADM" ? "Administrador" : "Vigia";
+}
+
+function exibirSaudacao() {
+  const mostrar = sessionStorage.getItem("autocontrol_boas_vindas_pendente");
+
+  if (mostrar !== "true") {
+    saudacaoAtiva = false;
+    saudacao.style.display = "none";
+    return;
+  }
+
+  sessionStorage.removeItem("autocontrol_boas_vindas_pendente");
+
+  saudacaoAtiva = true;
+  saudacao.style.display = "block";
+
+  setTimeout(() => {
+    saudacaoAtiva = false;
+    saudacao.style.display = "none";
+  }, 10000);
+}
+
 const btnAbrirCadastroVeiculo = document.getElementById(
   "abrir_cadastro_veiculo",
 );
@@ -1109,13 +1154,8 @@ function telaSelecionada(idTela) {
 
   const saudacao = document.getElementById("admin-header");
 
-  if (saudacao) {
-    if (idTela === "dashboard") {
-      saudacao.style.display = "block";
-    } else {
-      saudacao.style.display = "none";
-    }
-  }
+  saudacao.style.display =
+    idTela === "dashboard" && saudacaoAtiva ? "block" : "none";
 }
 
 // Configura as permissões dos menus
@@ -1173,6 +1213,9 @@ const user = await protegePagina();
 
 if (user) {
   usuarioLogado = user;
+
+  carregarPerfilUsuario(user);
+  exibirSaudacao();
 
   configPermissao(user.tipo);
   carregarResumo();

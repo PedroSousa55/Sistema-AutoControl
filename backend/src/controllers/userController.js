@@ -91,6 +91,7 @@ ainda sem controller e model de registro para o front end
       const token = jwt.sign(
         {
           id: user.id,
+          nome: user.nome,
           email: user.email,
           tipo: user.tipo,
         },

@@ -83,7 +83,9 @@
 /* TABELA */
 
 .relatorio_tabela_container {
+  display: block;
   width: 100%;
+  min-width: 0;
   overflow-x: auto;
   border: 1px solid #202a37;
   border-radius: 7px;

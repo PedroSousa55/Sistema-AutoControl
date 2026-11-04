@@ -49,6 +49,8 @@ async function manipulaForm(e) {
 
     localStorage.setItem("token", resultado.token);
 
+    sessionStorage.setItem("autocontrol_boas_vindas_pendente", "true");
+
     mostrarMessage("Login realizado com sucesso!", "#65d99a");
     setTimeout(() => {
       window.location.href = "/src/html/dashboard.html";
