@@ -1,0 +1,9 @@
+# Node
+node_modules/
+.env
+
+# Python (sistema da camera)
+.venv/
+__pycache__/
+*.pyc
+logs/

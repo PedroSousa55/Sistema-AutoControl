@@ -1,0 +1,19 @@
+# Bibliotecas do leitor de placas (testadas no Windows 11 + Python 3.12)
+# Instale com:  instalar.bat   (ou: pip install -r requirements.txt)
+
+# Vídeo e imagem
+opencv-python==5.0.0.93      # captura da webcam/RTSP e janela de vídeo
+numpy==2.5.4
+
+# IA - placa (versão 1)
+open-image-models==0.6.0     # detector de placas YOLO pronto (ONNX, rápido em CPU)
+fast-plate-ocr[onnx]==1.1.0  # OCR treinado só com placas (inclui Mercosul)
+
+# IA - veículo (versão 2: carro/moto) e treino de modelo próprio de placa
+ultralytics==8.4.191         # YOLO COCO; instala o PyTorch (versão CPU)
+
+# Configuração e integrações
+pyyaml==6.0.3                # leitura do config.yaml
+requests==2.34.2             # HTTP com o sistema de gestão e com o ESP32
+paho-mqtt==2.1.0             # MQTT com o ESP32 (broker Mosquitto)
+psutil==7.2.2                # assistente de câmera: descobre as redes do notebook

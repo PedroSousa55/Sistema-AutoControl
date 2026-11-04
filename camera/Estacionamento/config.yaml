@@ -1,0 +1,115 @@
+# =====================================================================
+#  CONFIGURAÇÃO DO LEITOR DE PLACAS - ESTACIONAMENTO INTELIGENTE
+#  Tudo o que muda de uma instalação para outra fica AQUI.
+#  Não precisa mexer no código Python para trocar câmera, URLs ou limiares.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# CÂMERA
+# ---------------------------------------------------------------------
+camera:
+  nome: entrada_1          # identificação enviada no JSON ("entrada_1", "saida_1"...)
+  funcao: entrada          # "entrada" (registra o veículo) ou "saida" (consulta pagamento)
+
+  # fonte = número  -> webcam (0 é a primeira, 1 a segunda...)
+  # fonte = texto   -> câmera IP. Exemplo Intelbras (padrão Dahua):
+  #   "rtsp://admin:SENHA@192.168.1.50:554/cam/realmonitor?channel=1&subtype=0"
+  #   (subtype=0 = imagem principal, alta resolução; subtype=1 = secundária, mais leve)
+  fonte: 0   # gravado pelo configurar_camera em 03/11/2026 21:47
+
+  largura: 1280            # resolução pedida à webcam (ignorado no RTSP)
+  altura: 720
+  backend_windows: dshow   # dshow (abre rápido) ou msmf. Use msmf se a imagem ficar preta.
+  espera_reconexao_s: 3    # se a câmera cair, tenta reconectar a cada X segundos
+
+# ---------------------------------------------------------------------
+# DETECÇÃO DA PLACA (onde está a placa na imagem)
+# ---------------------------------------------------------------------
+deteccao_placa:
+  # "open_image_models": modelo YOLO pronto, baixado automaticamente (recomendado)
+  # "yolo": seu próprio modelo treinado com Ultralytics (veja o README)
+  motor: open_image_models
+  modelo: yolo-v9-t-384-license-plate-end2end
+  modelo_yolo: modelos/placa.pt   # usado apenas se motor = "yolo"
+  confianca_minima: 0.40          # abaixo disso, a detecção é descartada
+
+# ---------------------------------------------------------------------
+# LEITURA DOS CARACTERES (OCR)
+# ---------------------------------------------------------------------
+ocr:
+  modelo: cct-s-v2-global-model   # modelo especializado em placas (inclui Brasil/Mercosul)
+  confianca_minima: 0.50          # média de confiança dos caracteres
+
+# ---------------------------------------------------------------------
+# VOTAÇÃO - só confirma a placa depois de ler a MESMA coisa várias vezes
+# ---------------------------------------------------------------------
+votacao:
+  janela_quadros: 10        # considera as últimas N leituras válidas
+  votos_minimos: 5          # quantas vezes a mesma placa precisa aparecer
+  intervalo_repeticao_s: 20 # depois de confirmar, ignora a MESMA placa por X segundos
+  tempo_esquecer_s: 2       # sem ver placa por X segundos, zera os votos (outro veículo)
+
+# ---------------------------------------------------------------------
+# VERSÃO 2 - tipo e cor do veículo (deixe false na versão 1)
+# ---------------------------------------------------------------------
+veiculo:
+  ativar: false
+  modelo: yolo11n.pt        # modelo COCO pré-treinado (baixa sozinho)
+  confianca_minima: 0.40
+
+cor:
+  ativar: false
+  clusters: 3               # quantos grupos de cor o K-means procura
+
+# ---------------------------------------------------------------------
+# SISTEMA DE GESTÃO (equipe de sistemas - JavaScript)
+# ---------------------------------------------------------------------
+api:
+  modo_simulado: true       # true = não precisa da API real (para testes)
+  url_base: "http://localhost:3000"
+  rota_entrada: "/api/entrada"          # POST com o JSON do evento de entrada
+  rota_consulta_pagamento: "/api/pagamento"  # consulta se a placa pagou
+  metodo_consulta: GET      # GET -> /api/pagamento?placa=ABC1D23 | POST -> envia {"placa": ...}
+  timeout_s: 3
+  enviar_foto: false        # true = manda a foto da placa em base64 no campo "foto"
+  simulado:                 # regras usadas só quando modo_simulado = true
+    todas_pagas: true                 # toda placa é considerada paga na saída...
+    placas_nao_pagas: ["RIO1A23"]     # ...menos estas (para testar a recusa)
+    valor_hora: 5.00                  # R$ por hora (mínimo 1 hora)
+
+# ---------------------------------------------------------------------
+# ESP32 (equipe de hardware - cancela, sensores e LEDs)
+# ---------------------------------------------------------------------
+esp32:
+  ativar: true
+  protocolo: mqtt           # "mqtt" (recomendado) ou "http"
+  usar_sensor_presenca: false  # true = só lê placa quando o ESP32 avisar que há veículo
+  tempo_max_leitura_s: 10      # com sensor: veículo parado X s sem placa lida = "leitura incerta"
+  # Cada cancela tem o SEU ESP32. "{camera}" é trocado pelo nome da câmera
+  # (entrada_1 no rodar.bat, saida_1 no rodar_saida.bat), então cada lado
+  # conversa só com o ESP32 dele.
+  mqtt:
+    broker: localhost       # Mosquitto rodando no notebook
+    porta: 1883
+    topico_comandos: "estacionamento/{camera}/comando"   # notebook -> ESP32
+    topico_sensor: "estacionamento/{camera}/sensor"      # ESP32 -> notebook (S1 chegada: 1/0)
+    topico_passagem: "estacionamento/{camera}/passagem"  # ESP32 -> notebook (S2: passou)
+  http:
+    url_esp32:                         # IP de cada ESP32 na rede
+      entrada_1: "http://192.168.137.80"
+      saida_1: "http://192.168.137.81"
+    porta_notebook:                    # o ESP32 chama http://IP_DO_NOTEBOOK:PORTA/sensor
+      entrada_1: 8090
+      saida_1: 8091
+
+# ---------------------------------------------------------------------
+# REGISTRO (log) e TELA
+# ---------------------------------------------------------------------
+registro:
+  arquivo_log: logs/leituras.jsonl   # uma linha JSON por placa confirmada
+  pasta_fotos: fotos                 # recorte da placa de cada leitura confirmada
+  fuso_horario: "-03:00"             # horário de Brasília
+
+tela:
+  mostrar_janela: true
+  largura_janela: 1280
