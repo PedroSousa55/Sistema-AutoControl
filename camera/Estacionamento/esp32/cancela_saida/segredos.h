@@ -10,5 +10,5 @@
 
 #pragma once
 
-const char* WIFI_NOME  = "BRUNOPC";
+const char* WIFI_NOME  = "IOT";
 const char* WIFI_SENHA = "123456789";

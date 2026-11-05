@@ -461,10 +461,21 @@
         <h1 class="h1_txt_veiculo">Entradas</h1>
 
         <div class="entrada-filtros">
-          <input type="date" id="data_inicio" aria-label="Data inicial" />
-          <input type="date" id="data_fim" aria-label="Data final" />
+          <div class="relatorio_filtro">
+            <label for="buscar_placa_entrada">Buscar por placa</label>
+            <input
+              type="search"
+              id="buscar_placa_entrada"
+              placeholder="Digite a placa do veículo..."
+              autocomplete="off"
+            />
+          </div>
 
-          <button type="button" id="filtrar_entradas">Filtrar</button>
+          <div class="relatorio_filtro">
+            <label for="filtrar_data_entrada">Filtrar por data</label>
+            <input type="date" id="filtrar_data_entrada" />
+          </div>
+
           <a
             href="#"
             id="abrir_cadastro_entrada"
@@ -495,7 +506,6 @@
 
         <div class="entrada-rodape">
           <span>Nenhuma entrada carregada.</span>
-
           <div class="entrada-paginacao"></div>
         </div>
       </div>
@@ -508,10 +518,21 @@
         <h1 class="h1_txt_veiculo">Saídas</h1>
 
         <div class="saida-filtros">
-          <input type="date" id="data_inicio_saida" aria-label="Data inicial" />
-          <input type="date" id="data_fim_saida" aria-label="Data final" />
+          <div class="relatorio_filtro">
+            <label for="buscar_placa_saida">Buscar por placa</label>
+            <input
+              type="search"
+              id="buscar_placa_saida"
+              placeholder="Digite a placa do veículo..."
+              autocomplete="off"
+            />
+          </div>
 
-          <button type="button" id="filtrar_saidas">Filtrar</button>
+          <div class="relatorio_filtro">
+            <label for="filtrar_data_saida">Filtrar por data</label>
+            <input type="date" id="filtrar_data_saida" />
+          </div>
+
           <a href="#" id="abrir_cadastro_saida" class="button_cadastro_veiculo">
             + Cadastrar Saída
           </a>
@@ -600,7 +621,6 @@
           name="config_tab"
           id="tab_geral"
           class="config-radio"
-          checked
         />
 
         <input
@@ -608,6 +628,7 @@
           name="config_tab"
           id="tab_usuarios"
           class="config-radio"
+          checked
         />
 
         <input
@@ -618,7 +639,6 @@
         />
 
         <div class="config-tabs">
-          <label for="tab_geral">Geral</label>
           <label for="tab_usuarios">Usuários</label>
           <label for="tab_notificacoes">Notificações</label>
         </div>
@@ -786,14 +806,6 @@
                   <span>Usuário</span>
                 </label>
 
-                <label for="sub_login" class="usuario-item">
-                  <svg class="icon" viewBox="0 0 24 24">
-                    <rect x="5" y="11" width="14" height="9" rx="2" />
-                    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-                  </svg>
-                  <span>Login e Senha</span>
-                </label>
-
                 <button
                   type="button"
                   class="usuario-item usuario-item-sair"
@@ -849,42 +861,6 @@
                       </svg>
                     </div>
                   </div>
-
-                  <div class="usuario-campo">
-                    <label for="usuario_telefone">Número</label>
-                    <input type="tel" id="usuario_telefone" value="" readonly />
-                  </div>
-
-                  <div class="usuario-campo">
-                    <label for="usuario_localizacao">Localização</label>
-                    <select id="usuario_localizacao" disabled>
-                      <option value="" selected>Selecione</option>
-                      <option value="São Luís - MA">São Luís - MA</option>
-                      <option value="Imperatriz - MA">Imperatriz - MA</option>
-                      <option value="Caxias - MA">Caxias - MA</option>
-                      <option value="Timon - MA">Timon - MA</option>
-                      <option value="Teresina - PI">Teresina - PI</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="usuario-acoes">
-                  <button
-                    type="button"
-                    class="usuario-botao-editar"
-                    id="editar_usuario"
-                  >
-                    Editar
-                  </button>
-
-                  <button
-                    type="submit"
-                    class="usuario-botao-salvar"
-                    id="salvar_usuario"
-                    disabled
-                  >
-                    salvar
-                  </button>
                 </div>
               </form>
             </div>

@@ -9,6 +9,8 @@
 @import url("./layout/entrada/entrada.css");
 @import url("./layout/saida/saida.css");
 @import url("./layout/config/config.css");
+
+
 @import url("./layout/modal/modal.css");
 @import url("layout/modal/modalNotificacao.css");
 @import url("./layout/relatorio/relatorio.css");

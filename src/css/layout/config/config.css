@@ -1,4 +1,3 @@
-
 /* ===== CONFIGURAÇÃO ===== */
 
 #config_main {
@@ -73,6 +72,10 @@
   display: none;
 }
 
+#painel_geral {
+  display: none !important;
+}
+
 #tab_geral:checked ~ #painel_geral,
 #tab_usuarios:checked ~ #painel_usuarios,
 #tab_notificacoes:checked ~ #painel_notificacoes {
@@ -132,7 +135,9 @@
   font-size: 15px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .config-campo input:focus,
@@ -147,8 +152,6 @@
   -webkit-appearance: none;
   margin: 0;
 }
-
-
 
 /* ----- Horários ----- */
 .config-horarios {
@@ -233,7 +236,9 @@
   font-family: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    transform 0.1s;
 }
 
 .config-botao-salvar:hover {
@@ -350,7 +355,9 @@
   font-family: inherit;
   text-align: left;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
 }
 
 .usuario-item .icon {
@@ -443,7 +450,9 @@
   font-size: 11px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .usuario-campo select {
@@ -513,7 +522,11 @@
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, opacity 0.2s, transform 0.1s;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    opacity 0.2s,
+    transform 0.1s;
 }
 
 .usuario-botao-editar {

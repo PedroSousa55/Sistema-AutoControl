@@ -13,6 +13,7 @@ import {
 } from "./api.js";
 
 const btnSair = document.getElementById("sair_button");
+const btnSairConfig = document.getElementById("sair_config");
 
 let usuarioLogado = null;
 
@@ -21,6 +22,11 @@ const textoSaudacao = document.getElementById("user_h1");
 
 const nomePerfil = document.querySelector(".profile-info strong");
 const tipoPerfil = document.querySelector(".profile-info span");
+
+const nomeConfiguracao = document.getElementById("usuario_nome");
+const sobrenomeConfiguracao = document.getElementById("usuario_sobrenome");
+const emailConfiguracao = document.getElementById("usuario_email");
+const saudacaoConfiguracao = document.getElementById("usuario_saudacao_nome");
 
 let saudacaoAtiva = false;
 let temporizadorSaudacao = null;
@@ -34,11 +40,22 @@ function formatarNome(nome) {
 function carregarPerfilUsuario(user) {
   const nome = formatarNome(user.nome);
 
+  // Saudação do dashboard (já existente)
   textoSaudacao.textContent = `Olá, ${nome}!`;
 
+  // Perfil do menu lateral
   nomePerfil.textContent = nome;
-
   tipoPerfil.textContent = user.tipo === "ADM" ? "Administrador" : "Vigia";
+
+  // Dados pessoais na configuração
+  const partesNome = user.nome.trim().split(/\s+/);
+
+  nomeConfiguracao.value = partesNome.shift() || "";
+  sobrenomeConfiguracao.value = partesNome.join(" ");
+
+  emailConfiguracao.value = user.email || "";
+
+  saudacaoConfiguracao.textContent = nome;
 }
 
 function exibirSaudacao() {
@@ -97,7 +114,7 @@ const TELAS = [
   { menu: "entrada_menu", tela: "entrada_main", restrita: false },
   { menu: "saida_menu", tela: "saida_main", restrita: false },
   { menu: "relatorios_menu", tela: "relatorios_main", restrita: true },
-  { menu: "config_menu", tela: "config_main", restrita: true },
+  { menu: "config_menu", tela: "config_main", restrita: false },
 ];
 
 // Abre o modal com o conteúdo informado
@@ -486,6 +503,17 @@ function sairDashboard() {
   window.location.href = "../../login.html";
 }
 
+// Botão Sair do menu lateral
+btnSair.addEventListener("click", (e) => {
+  e.preventDefault();
+  sairDashboard();
+});
+
+// Botão Sair da configuração
+btnSairConfig.addEventListener("click", () => {
+  sairDashboard();
+});
+
 btnSair.addEventListener("click", (e) => {
   e.preventDefault();
   sairDashboard();
@@ -644,7 +672,7 @@ async function carregarEntradas() {
         hour12: false,
       });
 
-      const status = movimentacao.data_saida ? "Fora" : "Dentro";
+      const status = movimentacao.data_saida ? "Saiu" : "Presente";
 
       linha.innerHTML = `
         <td>${dataFormatada}</td>
@@ -1185,6 +1213,16 @@ function configPermissao(tipo) {
 
     botaoMenu.addEventListener("click", (e) => {
       e.preventDefault();
+
+      // Remove a seleção de todos os menus
+      document.querySelectorAll(".menu a").forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      // Marca somente o menu clicado
+      botaoMenu.classList.add("active");
+
+      // Troca a tela
       telaSelecionada(idTela);
 
       if (idTela === "veiculo_main") {
@@ -1198,6 +1236,7 @@ function configPermissao(tipo) {
       if (idTela === "saida_main") {
         carregarSaidas();
       }
+
       if (idTela === "relatorios_main") {
         inicializarRelatorios();
       }

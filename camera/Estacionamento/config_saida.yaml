@@ -81,7 +81,7 @@ api:
 # ESP32 (equipe de hardware - cancela, sensores e LEDs)
 # ---------------------------------------------------------------------
 esp32:
-  ativar: false
+  ativar: true
   protocolo: mqtt # "mqtt" (recomendado) ou "http"
   usar_sensor_presenca: false # true = só lê placa quando o ESP32 avisar que há veículo
   tempo_max_leitura_s: 10 # com sensor: veículo parado X s sem placa lida = "leitura incerta"

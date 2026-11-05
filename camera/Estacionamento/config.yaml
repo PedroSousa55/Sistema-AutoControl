@@ -15,7 +15,7 @@ camera:
   # fonte = texto   -> câmera IP. Exemplo Intelbras (padrão Dahua):
   #   "rtsp://admin:SENHA@192.168.1.50:554/cam/realmonitor?channel=1&subtype=0"
   #   (subtype=0 = imagem principal, alta resolução; subtype=1 = secundária, mais leve)
-  fonte: 0 # gravado pelo configurar_camera em 03/11/2026 21:47
+  fonte: 1   # gravado pelo configurar_camera em 04/11/2026 18:06
 
   largura: 1280 # resolução pedida à webcam (ignorado no RTSP)
   altura: 720
@@ -81,7 +81,7 @@ api:
 # ESP32 (equipe de hardware - cancela, sensores e LEDs)
 # ---------------------------------------------------------------------
 esp32:
-  ativar: false
+  ativar: true
   protocolo: mqtt # "mqtt" (recomendado) ou "http"
   usar_sensor_presenca: false # true = só lê placa quando o ESP32 avisar que há veículo
   tempo_max_leitura_s: 10 # com sensor: veículo parado X s sem placa lida = "leitura incerta"
